@@ -20,9 +20,6 @@ BenchmarkDotNet.Artifacts/
 coverage*.xml
 coverage*.json
 
-## Local tooling scratch
-.claude/
-
 ## Visual Studio / Rider / VS Code
 .vs/
 .idea/
