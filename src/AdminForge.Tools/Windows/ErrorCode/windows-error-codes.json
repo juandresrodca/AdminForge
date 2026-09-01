@@ -1,0 +1,476 @@
+[
+  {
+    "code": "0x00000000",
+    "symbol": "ERROR_SUCCESS",
+    "source": "Win32",
+    "message": "The operation completed successfully."
+  },
+  {
+    "code": "0x00000001",
+    "symbol": "ERROR_INVALID_FUNCTION",
+    "source": "Win32",
+    "message": "Incorrect function."
+  },
+  {
+    "code": "0x00000002",
+    "symbol": "ERROR_FILE_NOT_FOUND",
+    "source": "Win32",
+    "message": "The system cannot find the file specified."
+  },
+  {
+    "code": "0x00000003",
+    "symbol": "ERROR_PATH_NOT_FOUND",
+    "source": "Win32",
+    "message": "The system cannot find the path specified."
+  },
+  {
+    "code": "0x00000005",
+    "symbol": "ERROR_ACCESS_DENIED",
+    "source": "Win32",
+    "message": "Access is denied.",
+    "hint": "Check NTFS and share permissions, the account the process runs as, and whether the token is elevated."
+  },
+  {
+    "code": "0x00000006",
+    "symbol": "ERROR_INVALID_HANDLE",
+    "source": "Win32",
+    "message": "The handle is invalid."
+  },
+  {
+    "code": "0x00000008",
+    "symbol": "ERROR_NOT_ENOUGH_MEMORY",
+    "source": "Win32",
+    "message": "Not enough memory resources are available to process this command."
+  },
+  {
+    "code": "0x0000000D",
+    "symbol": "ERROR_INVALID_DATA",
+    "source": "Win32",
+    "message": "The data is invalid."
+  },
+  {
+    "code": "0x00000020",
+    "symbol": "ERROR_SHARING_VIOLATION",
+    "source": "Win32",
+    "message": "The process cannot access the file because it is being used by another process.",
+    "hint": "Use Resource Monitor or handle.exe to find the process holding the file open."
+  },
+  {
+    "code": "0x00000032",
+    "symbol": "ERROR_NOT_SUPPORTED",
+    "source": "Win32",
+    "message": "The request is not supported."
+  },
+  {
+    "code": "0x00000035",
+    "symbol": "ERROR_BAD_NETPATH",
+    "source": "Win32",
+    "message": "The network path was not found.",
+    "hint": "Usually name resolution or a firewall blocking TCP 445, rather than permissions."
+  },
+  {
+    "code": "0x00000043",
+    "symbol": "ERROR_BAD_NET_NAME",
+    "source": "Win32",
+    "message": "The network name cannot be found."
+  },
+  {
+    "code": "0x00000057",
+    "symbol": "ERROR_INVALID_PARAMETER",
+    "source": "Win32",
+    "message": "The parameter is incorrect."
+  },
+  {
+    "code": "0x00000070",
+    "symbol": "ERROR_DISK_FULL",
+    "source": "Win32",
+    "message": "There is not enough space on the disk."
+  },
+  {
+    "code": "0x0000007A",
+    "symbol": "ERROR_INSUFFICIENT_BUFFER",
+    "source": "Win32",
+    "message": "The data area passed to a system call is too small."
+  },
+  {
+    "code": "0x0000007E",
+    "symbol": "ERROR_MOD_NOT_FOUND",
+    "source": "Win32",
+    "message": "The specified module could not be found.",
+    "hint": "A dependency DLL is missing. Dependency Walker or Process Monitor will name it."
+  },
+  {
+    "code": "0x000000B7",
+    "symbol": "ERROR_ALREADY_EXISTS",
+    "source": "Win32",
+    "message": "Cannot create a file when that file already exists."
+  },
+  {
+    "code": "0x000000C1",
+    "symbol": "ERROR_BAD_EXE_FORMAT",
+    "source": "Win32",
+    "message": "Is not a valid Win32 application.",
+    "hint": "Commonly a 32-bit or 64-bit architecture mismatch."
+  },
+  {
+    "code": "0x0000041D",
+    "symbol": "ERROR_SERVICE_REQUEST_TIMEOUT",
+    "source": "Win32",
+    "message": "The service did not respond to the start or control request in a timely fashion."
+  },
+  {
+    "code": "0x00000422",
+    "symbol": "ERROR_SERVICE_DISABLED",
+    "source": "Win32",
+    "message": "The service cannot be started because it is disabled or has no enabled devices associated with it."
+  },
+  {
+    "code": "0x00000424",
+    "symbol": "ERROR_SERVICE_DOES_NOT_EXIST",
+    "source": "Win32",
+    "message": "The specified service does not exist as an installed service."
+  },
+  {
+    "code": "0x0000042D",
+    "symbol": "ERROR_SERVICE_LOGON_FAILED",
+    "source": "Win32",
+    "message": "The service did not start due to a logon failure.",
+    "hint": "Check the service account password and its Log on as a service right."
+  },
+  {
+    "code": "0x000004C3",
+    "symbol": "ERROR_SESSION_CREDENTIAL_CONFLICT",
+    "source": "Win32",
+    "message": "Multiple connections to a server or shared resource by the same user, using more than one user name, are not allowed.",
+    "hint": "Run net use * /delete and reconnect with a single credential."
+  },
+  {
+    "code": "0x00000520",
+    "symbol": "ERROR_NO_SUCH_LOGON_SESSION",
+    "source": "Win32",
+    "message": "A specified logon session does not exist. It may already have been terminated."
+  },
+  {
+    "code": "0x00000522",
+    "symbol": "ERROR_PRIVILEGE_NOT_HELD",
+    "source": "Win32",
+    "message": "A required privilege is not held by the client.",
+    "hint": "The account is missing a user right such as SeBackupPrivilege — check local or group policy."
+  },
+  {
+    "code": "0x0000052E",
+    "symbol": "ERROR_LOGON_FAILURE",
+    "source": "Win32",
+    "message": "The user name or password is incorrect."
+  },
+  {
+    "code": "0x0000052F",
+    "symbol": "ERROR_ACCOUNT_RESTRICTION",
+    "source": "Win32",
+    "message": "Account restrictions are preventing this user from signing in.",
+    "hint": "Blank passwords, logon hour limits or workstation restrictions all surface here."
+  },
+  {
+    "code": "0x00000532",
+    "symbol": "ERROR_PASSWORD_EXPIRED",
+    "source": "Win32",
+    "message": "The password for this account has expired."
+  },
+  {
+    "code": "0x00000533",
+    "symbol": "ERROR_ACCOUNT_DISABLED",
+    "source": "Win32",
+    "message": "This user account has been disabled."
+  },
+  {
+    "code": "0x0000053B",
+    "symbol": "ERROR_NO_SUCH_DOMAIN",
+    "source": "Win32",
+    "message": "The specified domain either does not exist or could not be contacted."
+  },
+  {
+    "code": "0x00000569",
+    "symbol": "ERROR_LOGON_TYPE_NOT_GRANTED",
+    "source": "Win32",
+    "message": "Logon failure: the user has not been granted the requested logon type at this computer.",
+    "hint": "The account lacks Allow log on locally, or Allow log on through Remote Desktop Services."
+  },
+  {
+    "code": "0x00000641",
+    "symbol": "ERROR_INSTALL_SERVICE_FAILURE",
+    "source": "MSI",
+    "message": "The Windows Installer service could not be accessed."
+  },
+  {
+    "code": "0x00000642",
+    "symbol": "ERROR_INSTALL_USEREXIT",
+    "source": "MSI",
+    "message": "User cancelled installation."
+  },
+  {
+    "code": "0x00000643",
+    "symbol": "ERROR_INSTALL_FAILURE",
+    "source": "MSI",
+    "message": "Fatal error during installation.",
+    "hint": "The generic MSI failure. The real cause is in the verbose log: msiexec /i package.msi /l*v install.log."
+  },
+  {
+    "code": "0x00000645",
+    "symbol": "ERROR_UNKNOWN_PRODUCT",
+    "source": "MSI",
+    "message": "This action is only valid for products that are currently installed."
+  },
+  {
+    "code": "0x00000652",
+    "symbol": "ERROR_INSTALL_ALREADY_RUNNING",
+    "source": "MSI",
+    "message": "Another installation is already in progress. Complete that installation before proceeding with this install."
+  },
+  {
+    "code": "0x00000654",
+    "symbol": "ERROR_INSTALL_PACKAGE_INVALID",
+    "source": "MSI",
+    "message": "This installation package could not be opened."
+  },
+  {
+    "code": "0x00000666",
+    "symbol": "ERROR_PRODUCT_VERSION",
+    "source": "MSI",
+    "message": "Another version of this product is already installed."
+  },
+  {
+    "code": "0x00000667",
+    "symbol": "ERROR_INVALID_COMMAND_LINE",
+    "source": "MSI",
+    "message": "Invalid command line argument."
+  },
+  {
+    "code": "0x00000BC2",
+    "symbol": "ERROR_SUCCESS_REBOOT_REQUIRED",
+    "source": "MSI",
+    "message": "The requested operation completed successfully. The system will need to be restarted so the changes can take effect.",
+    "hint": "Exit code 3010 is a success, not a failure. Deployment tools that treat it as an error will retry forever."
+  },
+  {
+    "code": "0x80004001",
+    "symbol": "E_NOTIMPL",
+    "source": "HRESULT",
+    "message": "Not implemented."
+  },
+  {
+    "code": "0x80004002",
+    "symbol": "E_NOINTERFACE",
+    "source": "HRESULT",
+    "message": "No such interface supported."
+  },
+  {
+    "code": "0x80004003",
+    "symbol": "E_POINTER",
+    "source": "HRESULT",
+    "message": "Invalid pointer."
+  },
+  {
+    "code": "0x80004004",
+    "symbol": "E_ABORT",
+    "source": "HRESULT",
+    "message": "Operation aborted."
+  },
+  {
+    "code": "0x80004005",
+    "symbol": "E_FAIL",
+    "source": "HRESULT",
+    "message": "Unspecified error.",
+    "hint": "The least specific error in Windows. Treat it as a prompt to read the component's own log."
+  },
+  {
+    "code": "0x8000FFFF",
+    "symbol": "E_UNEXPECTED",
+    "source": "HRESULT",
+    "message": "Catastrophic failure."
+  },
+  {
+    "code": "0x8007000E",
+    "symbol": "E_OUTOFMEMORY",
+    "source": "HRESULT",
+    "message": "Not enough memory resources are available to complete this operation."
+  },
+  {
+    "code": "0x80070057",
+    "symbol": "E_INVALIDARG",
+    "source": "HRESULT",
+    "message": "The parameter is incorrect."
+  },
+  {
+    "code": "0x80070422",
+    "symbol": "ERROR_SERVICE_DISABLED",
+    "source": "Windows Update",
+    "message": "The service cannot be started because it is disabled.",
+    "hint": "The Windows Update service (wuauserv) has been disabled, often by a hardening baseline."
+  },
+  {
+    "code": "0x800705B4",
+    "symbol": "ERROR_TIMEOUT",
+    "source": "HRESULT",
+    "message": "This operation returned because the timeout period expired."
+  },
+  {
+    "code": "0x800F081F",
+    "symbol": "CBS_E_SOURCE_MISSING",
+    "source": "Servicing",
+    "message": "The source files could not be found.",
+    "hint": "Point DISM at a mounted install.wim with /Source:wim:<path>:1 /LimitAccess."
+  },
+  {
+    "code": "0x800F0906",
+    "symbol": "CBS_E_DOWNLOAD_FAILURE",
+    "source": "Servicing",
+    "message": "The source files could not be downloaded.",
+    "hint": "Common when enabling .NET 3.5 or another Feature on Demand without a source. Supply /Source or allow access to Windows Update."
+  },
+  {
+    "code": "0x800F0922",
+    "symbol": "CBS_E_INSTALLERS_FAILED",
+    "source": "Servicing",
+    "message": "The installation of the update failed.",
+    "hint": "Very often too little free space in the System Reserved partition, or a VPN blocking the update endpoints."
+  },
+  {
+    "code": "0x80240022",
+    "symbol": "WU_E_ALL_UPDATES_FAILED",
+    "source": "Windows Update",
+    "message": "Operation failed for all the updates."
+  },
+  {
+    "code": "0x80244022",
+    "symbol": "WU_E_PT_HTTP_STATUS_SERVICE_UNAVAIL",
+    "source": "Windows Update",
+    "message": "The update server returned HTTP 503, service unavailable.",
+    "hint": "Usually the WSUS application pool has stopped. Check IIS on the WSUS server."
+  },
+  {
+    "code": "0x8024402C",
+    "symbol": "WU_E_PT_WINHTTP_NAME_NOT_RESOLVED",
+    "source": "Windows Update",
+    "message": "The proxy server or target server name cannot be resolved.",
+    "hint": "Classic WSUS misconfiguration: check the WUServer policy value and the client's proxy settings."
+  },
+  {
+    "code": "0x87D00324",
+    "symbol": "MENROLL_E_DEVICE_MANAGEMENT_APP_NOT_DETECTED",
+    "source": "Intune",
+    "message": "The application was reported as installed successfully, but the detection rule did not find it afterwards.",
+    "hint": "The install succeeded and the detection rule is wrong. Check the file path, version comparison or registry key you used to detect it."
+  },
+  {
+    "code": "0x87D1FDE8",
+    "symbol": "REMEDIATION_FAILED",
+    "source": "Intune",
+    "message": "The remediation failed.",
+    "hint": "Seen on Intune app and policy remediations. The device-side detail is in the IntuneManagementExtension log."
+  },
+  {
+    "code": "0xC0000005",
+    "symbol": "STATUS_ACCESS_VIOLATION",
+    "source": "NTSTATUS",
+    "message": "The instruction referenced memory it could not access.",
+    "hint": "A crash rather than a permissions problem, despite the name."
+  },
+  {
+    "code": "0xC000000D",
+    "symbol": "STATUS_INVALID_PARAMETER",
+    "source": "NTSTATUS",
+    "message": "An invalid parameter was passed to a service or function."
+  },
+  {
+    "code": "0xC0000022",
+    "symbol": "STATUS_ACCESS_DENIED",
+    "source": "NTSTATUS",
+    "message": "A process has requested access to an object but has not been granted those access rights."
+  },
+  {
+    "code": "0xC0000034",
+    "symbol": "STATUS_OBJECT_NAME_NOT_FOUND",
+    "source": "NTSTATUS",
+    "message": "The object name is not found."
+  },
+  {
+    "code": "0xC000003A",
+    "symbol": "STATUS_OBJECT_PATH_NOT_FOUND",
+    "source": "NTSTATUS",
+    "message": "The path does not exist."
+  },
+  {
+    "code": "0xC0000064",
+    "symbol": "STATUS_NO_SUCH_USER",
+    "source": "NTSTATUS",
+    "message": "The specified account does not exist.",
+    "hint": "In event 4625 this distinguishes a bad username from a bad password, which is 0xC000006A."
+  },
+  {
+    "code": "0xC000006A",
+    "symbol": "STATUS_WRONG_PASSWORD",
+    "source": "NTSTATUS",
+    "message": "The user name is correct but the password is wrong.",
+    "hint": "A run of these against one account in event 4625 is a password-spray signature."
+  },
+  {
+    "code": "0xC000006D",
+    "symbol": "STATUS_LOGON_FAILURE",
+    "source": "NTSTATUS",
+    "message": "The attempted logon is invalid, due to either a bad user name or authentication information."
+  },
+  {
+    "code": "0xC000006E",
+    "symbol": "STATUS_ACCOUNT_RESTRICTION",
+    "source": "NTSTATUS",
+    "message": "The user account has restrictions that prevent this logon."
+  },
+  {
+    "code": "0xC000006F",
+    "symbol": "STATUS_INVALID_LOGON_HOURS",
+    "source": "NTSTATUS",
+    "message": "The user account has time restrictions and cannot sign in at this time."
+  },
+  {
+    "code": "0xC0000070",
+    "symbol": "STATUS_INVALID_WORKSTATION",
+    "source": "NTSTATUS",
+    "message": "The user account is restricted and cannot be used to sign in from this computer."
+  },
+  {
+    "code": "0xC0000071",
+    "symbol": "STATUS_PASSWORD_EXPIRED",
+    "source": "NTSTATUS",
+    "message": "The user account password has expired."
+  },
+  {
+    "code": "0xC0000072",
+    "symbol": "STATUS_ACCOUNT_DISABLED",
+    "source": "NTSTATUS",
+    "message": "The user account is currently disabled."
+  },
+  {
+    "code": "0xC0000135",
+    "symbol": "STATUS_DLL_NOT_FOUND",
+    "source": "NTSTATUS",
+    "message": "The program cannot start because a required DLL was not found."
+  },
+  {
+    "code": "0xC0000193",
+    "symbol": "STATUS_ACCOUNT_EXPIRED",
+    "source": "NTSTATUS",
+    "message": "The user account has expired."
+  },
+  {
+    "code": "0xC0000224",
+    "symbol": "STATUS_PASSWORD_MUST_CHANGE",
+    "source": "NTSTATUS",
+    "message": "The user must change their password before signing in for the first time."
+  },
+  {
+    "code": "0xC0000234",
+    "symbol": "STATUS_ACCOUNT_LOCKED_OUT",
+    "source": "NTSTATUS",
+    "message": "The user account has been automatically locked because too many invalid logon attempts were made."
+  }
+]

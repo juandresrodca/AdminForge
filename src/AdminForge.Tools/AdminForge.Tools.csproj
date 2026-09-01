@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <RootNamespace>AdminForge.Tools</RootNamespace>
+    <!-- Lets a tool ship an optional Razor view alongside its class for bespoke UI. -->
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdminForge.Core\AdminForge.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="Tool datasets">
+    <!-- Data-only tool content. Adding entries to these files is a pull request with no C# in it. -->
+    <EmbeddedResource Include="**\*.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cronos" Version="0.13.0" />
+    <PackageReference Include="DnsClient" Version="1.8.0" />
+  </ItemGroup>
+
+</Project>
