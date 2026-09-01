@@ -1,0 +1,16 @@
+{
+  "projectName": "AdminForge",
+  "projectOwner": "juandresrodca",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": ["README.md"],
+  "imageSize": 90,
+  "commit": true,
+  "commitConvention": "angular",
+  "commitType": "docs",
+  "contributorsPerLine": 6,
+  "contributorsSortAlphabetically": false,
+  "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-9fef00?style=flat-square&labelColor=0a0e16)](#contributors)",
+  "skipCi": true,
+  "contributors": []
+}
