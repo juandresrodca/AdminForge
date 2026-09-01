@@ -1,0 +1,30 @@
+services:
+  adminforge:
+    # Swap the build block for the published image once you would rather not build:
+    #   image: ghcr.io/juandresrodca/adminforge:latest
+    build: .
+    image: adminforge:local
+    container_name: adminforge
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Homelab instances usually want the network tools to reach the LAN. Leave this
+      # off for anything reachable from the internet: it turns the server-side tools
+      # into an SSRF proxy into whatever network the container sits on.
+      AdminForge__AllowPrivateTargets: "false"
+      AdminForge__ToolTimeoutSeconds: "15"
+      AdminForge__RateLimit__Enabled: "true"
+      AdminForge__RateLimit__PermitLimit: "30"
+      # AdminForge__InstanceBanner: "Public demo — do not paste anything sensitive"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
