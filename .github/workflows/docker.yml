@@ -13,8 +13,10 @@ permissions:
   packages: write
 
 concurrency:
+  # Deliberately not cancel-in-progress: a cancelled publish leaves the registry
+  # without the image the README tells people to pull.
   group: docker-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
