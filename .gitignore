@@ -1,0 +1,55 @@
+## .NET
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.user
+*.suo
+*.userprefs
+*.cache
+*.dll
+*.pdb
+project.lock.json
+artifacts/
+TestResults/
+BenchmarkDotNet.Artifacts/
+*.coverage
+*.coverlet.json
+coverage*.xml
+coverage*.json
+
+## Local tooling scratch
+.claude/
+
+## Visual Studio / Rider / VS Code
+.vs/
+.idea/
+*.sln.docstates
+*.DotSettings.user
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+## ASP.NET Core
+appsettings.Local.json
+appsettings.*.Local.json
+*.pfx
+*.key
+*.pem
+!tests/**/fixtures/*.pem
+
+## Node (only if a contributor adds tooling)
+node_modules/
+npm-debug.log*
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Docker
+.env
+docker-compose.override.yml

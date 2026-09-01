@@ -1,0 +1,76 @@
+# AdminForge — code style. Enforced in CI via `dotnet format --verify-no-changes`.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{json,yml,yaml,csproj,props,targets,cshtml,css,js,html}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+indent_size = 4
+
+# --- Language conventions ---------------------------------------------------
+csharp_using_directive_placement = outside_namespace:warning
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_braces = true:silent
+csharp_style_var_for_built_in_types = false:silent
+csharp_style_var_when_type_is_apparent = true:silent
+csharp_style_expression_bodied_methods = when_on_single_line:silent
+csharp_style_expression_bodied_properties = true:silent
+csharp_style_prefer_primary_constructors = true:silent
+
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_predefined_type_for_locals_parameters_members = true:warning
+dotnet_style_readonly_field = true:suggestion
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+
+# --- Naming -----------------------------------------------------------------
+# Rules are matched in the order they are declared, so the static and const cases
+# have to come before the general private-field rule that would otherwise claim them.
+
+# private const -> PascalCase
+dotnet_naming_rule.private_const_pascal.symbols = private_const_fields
+dotnet_naming_rule.private_const_pascal.style = pascal_case
+dotnet_naming_rule.private_const_pascal.severity = warning
+dotnet_naming_symbols.private_const_fields.applicable_kinds = field
+dotnet_naming_symbols.private_const_fields.applicable_accessibilities = private, internal, protected
+dotnet_naming_symbols.private_const_fields.required_modifiers = const
+
+# private static readonly -> PascalCase
+dotnet_naming_rule.private_static_readonly_pascal.symbols = private_static_readonly_fields
+dotnet_naming_rule.private_static_readonly_pascal.style = pascal_case
+dotnet_naming_rule.private_static_readonly_pascal.severity = warning
+dotnet_naming_symbols.private_static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.private_static_readonly_fields.applicable_accessibilities = private, internal, protected
+dotnet_naming_symbols.private_static_readonly_fields.required_modifiers = static, readonly
+
+# every other private instance field -> _camelCase
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel
+dotnet_naming_rule.private_fields_underscore.severity = warning
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+dotnet_naming_style.underscore_camel.required_prefix = _
+dotnet_naming_style.underscore_camel.capitalization = camel_case
+
+# --- Analyzer severities we care about --------------------------------------
+dotnet_diagnostic.IDE0005.severity = warning   # unnecessary usings
+dotnet_diagnostic.CA1822.severity = none       # member can be static — noisy for tool classes
