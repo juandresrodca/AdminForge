@@ -1,0 +1,68 @@
+@inject IToolRegistry Registry
+@inject Microsoft.Extensions.Options.IOptionsMonitor<AdminForgeOptions> Options
+@{
+    string? banner = Options.CurrentValue.InstanceBanner;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@(ViewData["Title"] is null ? "AdminForge — self-hosted sysadmin and security toolbox" : ViewData["Title"] + " — AdminForge")</title>
+    <meta name="description" content="@(ViewData["Description"] ?? "A self-hosted toolbox of browser-based utilities for sysadmins, IT and security engineers. Runs in Docker, makes no third-party requests.")" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0a0e16" />
+    <link rel="icon" href="~/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="~/css/adminforge.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="masthead">
+        <div class="shell masthead-inner">
+            <a class="brand" href="/" aria-label="AdminForge home">
+                <svg class="brand-mark" width="26" height="26" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#anvil"></use></svg>
+                <span class="brand-name">Admin<span class="brand-accent">Forge</span></span>
+            </a>
+
+            <form class="masthead-search" role="search" method="get" action="/">
+                <label class="visually-hidden" for="masthead-q">Search tools</label>
+                <svg class="masthead-search-icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#search"></use></svg>
+                <input id="masthead-q" name="q" type="search" placeholder="Search @Registry.All.Count tools" autocomplete="off" spellcheck="false" value="@Context.Request.Query["q"]" />
+                <kbd class="masthead-kbd" aria-hidden="true">/</kbd>
+            </form>
+
+            <a class="masthead-repo" href="https://github.com/juandresrodca/AdminForge" rel="noopener noreferrer" target="_blank">
+                <svg width="17" height="17" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#github"></use></svg>
+                <span>Star on GitHub</span>
+            </a>
+        </div>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(banner))
+    {
+        <p class="instance-banner">@banner</p>
+    }
+
+    <main id="main" class="shell">
+        @RenderBody()
+    </main>
+
+    <footer class="colophon">
+        <div class="shell colophon-inner">
+            <p class="colophon-line">
+                <strong>AdminForge</strong> — self-hosted, MIT licensed, no telemetry, no third-party requests.
+            </p>
+            <nav class="colophon-links" aria-label="Project links">
+                <a href="https://github.com/juandresrodca/AdminForge">Source</a>
+                <a href="https://github.com/juandresrodca/AdminForge/blob/main/CONTRIBUTING.md">Add a tool</a>
+                <a href="https://github.com/juandresrodca/AdminForge/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">Good first issues</a>
+                <a href="https://github.com/juandresrodca/AdminForge/discussions">Discussions</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="~/js/adminforge.js" asp-append-version="true" defer></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

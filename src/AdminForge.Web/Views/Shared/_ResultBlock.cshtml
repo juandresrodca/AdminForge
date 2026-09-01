@@ -1,0 +1,133 @@
+@model ResultBlock
+@*
+    The single renderer for every tool's output. A contributor returns structured
+    blocks and gets this markup for free, which is why new tools look right without
+    their author writing any HTML or CSS.
+*@
+@functions {
+    static string StatusClass(ResultStatus status) => status switch
+    {
+        ResultStatus.Ok => "s-ok",
+        ResultStatus.Warning => "s-warn",
+        ResultStatus.Danger => "s-danger",
+        ResultStatus.Info => "s-info",
+        _ => "s-neutral",
+    };
+
+    static string? TextClass(ResultStatus status) => status switch
+    {
+        ResultStatus.Ok => "t-ok",
+        ResultStatus.Warning => "t-warn",
+        ResultStatus.Danger => "t-danger",
+        ResultStatus.Info => "t-info",
+        _ => null,
+    };
+}
+
+<div class="block">
+    @if (!string.IsNullOrWhiteSpace(Model.Title))
+    {
+        <h3 class="block-title">@Model.Title</h3>
+    }
+
+    @switch (Model)
+    {
+        case StatusBlock status:
+            <div class="status-line @StatusClass(status.Status)">
+                <span class="status-dot" aria-hidden="true"></span>
+                <span>
+                    <span class="status-message">@status.Message</span>
+                    @if (!string.IsNullOrWhiteSpace(status.Detail))
+                    {
+                        <br />
+                        <span class="status-detail">@status.Detail</span>
+                    }
+                </span>
+            </div>
+            break;
+
+        case KeyValueBlock kv:
+            <dl class="kv">
+                @foreach (KeyValueRow row in kv.Rows)
+                {
+                    <dt>@row.Label</dt>
+                    <dd class="@TextClass(row.Status) @(row.Monospace ? "mono" : null)">@row.Value</dd>
+                }
+            </dl>
+            break;
+
+        case TableBlock table:
+            @if (table.Rows.Count == 0)
+            {
+                <div class="table-scroll"><p class="table-empty">@table.EmptyMessage</p></div>
+            }
+            else
+            {
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                @foreach (string header in table.Headers)
+                                {
+                                    <th scope="col">@header</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (IReadOnlyList<TableCell> row in table.Rows)
+                            {
+                                <tr>
+                                    @foreach (TableCell cell in row)
+                                    {
+                                        <td class="@TextClass(cell.Status) @(cell.Monospace ? "mono" : null)">@cell.Value</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            break;
+
+        case CodeBlock code:
+            <div class="code-wrap">
+                @if (code.Language is not null || code.Copyable)
+                {
+                    <div class="code-bar">
+                        <span>@(code.Language ?? "output")</span>
+                        @if (code.Copyable)
+                        {
+                            <button type="button" class="copy-btn" data-copy>
+                                <svg width="12" height="12" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#copy"></use></svg>
+                                <span data-copy-label>Copy</span>
+                            </button>
+                        }
+                    </div>
+                }
+                <pre><code>@code.Content</code></pre>
+            </div>
+            break;
+
+        case ListBlock list when list.Ordered:
+            <ol class="list-block">
+                @foreach (string item in list.Items)
+                {
+                    <li>@item</li>
+                }
+            </ol>
+            break;
+
+        case ListBlock list:
+            <ul class="list-block">
+                @foreach (string item in list.Items)
+                {
+                    <li>@item</li>
+                }
+            </ul>
+            break;
+
+        case TextBlock text:
+            <p class="tool-lede">@text.Text</p>
+            break;
+    }
+</div>

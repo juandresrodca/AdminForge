@@ -1,0 +1,80 @@
+@model GalleryViewModel
+@inject IToolRegistry Registry
+@{
+    ViewData["Title"] = null;
+}
+
+<section class="intro">
+    <h1 class="intro-title">The self-hosted toolbox for <span class="accent">sysadmins and security</span> work.</h1>
+    <p class="intro-lede">
+        Subnets, certificates, DNS, mail records, Windows error codes and the rest of the daily
+        lookups — in one container you run yourself. Nothing is logged, nothing is sent to a
+        third party, and the tools that touch secrets never leave your browser.
+    </p>
+    <p class="intro-meta">
+        <span><span class="intro-count">@Model.TotalCount</span> tools</span>
+        <span><span class="intro-count">@Registry.Categories.Count</span> categories</span>
+        <span>MIT licensed</span>
+        <span>Runs offline</span>
+    </p>
+</section>
+
+<nav class="rail" aria-label="Filter by category">
+    <a class="chip" href="/@(string.IsNullOrWhiteSpace(Model.Query) ? "" : "?q=" + Uri.EscapeDataString(Model.Query))"
+       aria-current="@(Model.Category is null ? "true" : "false")">
+        All
+        <span class="chip-count">@Model.TotalCount</span>
+    </a>
+    @foreach (ToolCategory category in Model.Categories)
+    {
+        ToolCategoryInfo info = category.Info();
+        string href = "/?category=" + info.Slug + (string.IsNullOrWhiteSpace(Model.Query) ? "" : "&q=" + Uri.EscapeDataString(Model.Query));
+        <a class="chip" href="@href" aria-current="@(Model.Category == category ? "true" : "false")">
+            <svg width="14" height="14" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#@info.Icon"></use></svg>
+            @info.Label
+            <span class="chip-count">@Registry.InCategory(category).Count</span>
+        </a>
+    }
+</nav>
+
+@if (Model.Tools.Count == 0)
+{
+    <div class="empty">
+        <svg class="empty-icon" width="30" height="30" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#search"></use></svg>
+        <p class="empty-title">No tool matches that.</p>
+        <p class="empty-body">
+            Try a broader term, or clear the filter to see all @Model.TotalCount tools. If the tool you
+            need does not exist yet, it is probably already an open issue —
+            <a href="https://github.com/juandresrodca/AdminForge/issues">have a look</a>, or propose it.
+        </p>
+        <a class="btn btn-quiet" href="/">Clear filters</a>
+    </div>
+}
+else if (Model.IsFiltered)
+{
+    <div class="grid">
+        @foreach (ToolDescriptor tool in Model.Tools)
+        {
+            <partial name="_ToolCard" model="tool" />
+        }
+    </div>
+}
+else
+{
+    @foreach (ToolCategory category in Model.Categories)
+    {
+        ToolCategoryInfo info = category.Info();
+        <section class="group">
+            <div class="group-head">
+                <h2 class="group-title" id="cat-@info.Slug">@info.Label</h2>
+                <p class="group-blurb">@info.Blurb</p>
+            </div>
+            <div class="grid">
+                @foreach (ToolDescriptor tool in Registry.InCategory(category))
+                {
+                    <partial name="_ToolCard" model="tool" />
+                }
+            </div>
+        </section>
+    }
+}

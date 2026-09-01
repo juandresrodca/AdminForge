@@ -1,0 +1,71 @@
+@model ToolPageViewModel
+@{
+    ToolDescriptor tool = Model.Tool;
+    ToolCategoryInfo category = tool.Category.Info();
+    bool isClient = tool.Compute == ComputeMode.ClientSide;
+    ViewData["Title"] = tool.Name;
+    ViewData["Description"] = tool.Description;
+}
+
+<div class="tool-head">
+    <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">All tools</a>
+        <span aria-hidden="true">/</span>
+        <a href="/?category=@category.Slug">@category.Label</a>
+    </nav>
+    <div class="tool-title-row">
+        <h1 class="tool-title">@tool.Name</h1>
+        <span class="badge @(isClient ? "badge-client" : null)"
+              title="@(isClient ? "Runs entirely in your browser" : "Runs on the AdminForge server")">
+            <svg width="12" height="12" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#@(isClient ? "lock" : "server")"></use></svg>
+            @(isClient ? "In browser" : "Server side")
+        </span>
+    </div>
+    <p class="tool-lede">@tool.Description</p>
+</div>
+
+<div class="tool-layout">
+    <section class="panel">
+        <h2 class="panel-title">Input</h2>
+        @* asp-antiforgery is explicit because the form tag helper skips the token
+           whenever action is written out by hand rather than via asp-controller. *@
+        <form method="post"
+              action="@tool.Url"
+              asp-antiforgery="true"
+              data-tool-form="@tool.Id"
+              data-compute="@(isClient ? "client" : "server")"
+              data-module="@tool.ClientScript">
+            <partial name="_ToolForm" model="Model" />
+
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit" data-run-button>
+                    <span data-run-label>Run</span>
+                </button>
+                <button class="btn btn-quiet" type="reset">Clear</button>
+            </div>
+        </form>
+
+        <p class="compute-note">
+            <svg width="15" height="15" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#@(isClient ? "lock" : "server")"></use></svg>
+            <span>
+                @if (isClient)
+                {
+                    <text>This tool runs entirely in your browser. Nothing you type is sent to the server, so it is safe for tokens, keys and passwords — and it keeps working with the network unplugged.</text>
+                }
+                else
+                {
+                    <text>This tool runs on the AdminForge server, which needs to reach the target you enter. Nothing is stored or logged. Do not paste secrets into a server-side tool on an instance you do not control.</text>
+                }
+            </span>
+        </p>
+    </section>
+
+    <section id="tool-output" aria-live="polite" aria-atomic="true">
+        <partial name="_ToolOutcome" model="Model" />
+    </section>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(tool.Notes))
+{
+    <div class="notes">@tool.Notes</div>
+}

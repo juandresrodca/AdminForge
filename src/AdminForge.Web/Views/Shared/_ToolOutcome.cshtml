@@ -1,0 +1,50 @@
+@model ToolPageViewModel
+@*
+    The result pane. Swapped in wholesale by the fetch enhancement, and rendered
+    server-side on a plain form post, so a tool works with JavaScript disabled.
+*@
+@{
+    ToolResult? result = Model.Result;
+    bool hasFieldErrors = Model.FieldErrors.Count > 0;
+}
+
+<div class="outcome">
+    @if (hasFieldErrors && result is null)
+    {
+        <p class="result-error">
+            <svg width="17" height="17" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#alert"></use></svg>
+            <span>Check the highlighted @(Model.FieldErrors.Count == 1 ? "field" : "fields") and run again.</span>
+        </p>
+    }
+    else if (result is null)
+    {
+        <div class="placeholder">
+            <svg width="26" height="26" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#@Model.Tool.Icon"></use></svg>
+            <p>Fill in the form and run the tool. Results appear here.</p>
+        </div>
+    }
+    else if (!result.Succeeded)
+    {
+        <p class="result-error">
+            <svg width="17" height="17" aria-hidden="true" focusable="false"><use href="/icons/sprite.svg#alert"></use></svg>
+            <span>@result.Error</span>
+        </p>
+    }
+    else
+    {
+        <div>
+            @foreach (ResultBlock block in result.Blocks)
+            {
+                <partial name="_ResultBlock" model="block" />
+            }
+        </div>
+
+        @if (result.Elapsed is not null)
+        {
+            <p class="result-foot">
+                <span>@Model.Tool.Id</span>
+                <span>@($"{result.Elapsed.Value.TotalMilliseconds:N0} ms")</span>
+            </p>
+        }
+    }
+</div>

@@ -1,0 +1,122 @@
+@model ToolPageViewModel
+@*
+    Renders a tool's form from its generated descriptor. No tool ships its own markup,
+    so every form in AdminForge is laid out, labelled and validated identically.
+*@
+@{
+    IReadOnlyList<ToolFieldDescriptor> fields = Model.Tool.Form.Fields;
+}
+
+@if (fields.Count == 0)
+{
+    <p class="field-help">This tool renders its own controls.</p>
+}
+else
+{
+    <div class="form-grid">
+        @foreach (ToolFieldDescriptor field in fields)
+        {
+            string id = "f-" + field.Name;
+            bool invalid = Model.FieldErrors.TryGetValue(field.Name, out string? error);
+            string value = Model.ValueFor(field.Name, field.DefaultValue);
+            string describedBy = string.Join(' ', new[]
+            {
+                field.Help is not null ? id + "-help" : null,
+                invalid ? id + "-error" : null,
+            }.Where(x => x is not null));
+
+            <div class="field @(field.Half ? "field-half" : null) @(invalid ? "field-invalid" : null) @(field.Kind == FieldKind.Checkbox ? "field-check" : null)">
+                @if (field.Kind == FieldKind.Checkbox)
+                {
+                    <input type="checkbox"
+                           id="@id"
+                           name="@field.Name"
+                           value="true"
+                           checked="@(string.Equals(value, "true", StringComparison.OrdinalIgnoreCase))"
+                           aria-describedby="@(describedBy.Length > 0 ? describedBy : null)" />
+                    <label for="@id">@field.Label</label>
+                }
+                else
+                {
+                    <label for="@id">
+                        @field.Label
+                        @if (field.Required)
+                        {
+                            <span class="field-required" title="Required" aria-hidden="true">*</span>
+                        }
+                    </label>
+
+                    @switch (field.Kind)
+                    {
+                        case FieldKind.TextArea:
+                            <textarea id="@id"
+                                      name="@field.Name"
+                                      rows="@field.Rows"
+                                      placeholder="@field.Placeholder"
+                                      maxlength="@(field.MaxLength > 0 ? field.MaxLength : (int?)null)"
+                                      spellcheck="false"
+                                      required="@field.Required"
+                                      aria-describedby="@(describedBy.Length > 0 ? describedBy : null)">@value</textarea>
+                            break;
+
+                        case FieldKind.Select:
+                            <select id="@id"
+                                    name="@field.Name"
+                                    aria-describedby="@(describedBy.Length > 0 ? describedBy : null)">
+                                @foreach (FieldOption option in field.Options)
+                                {
+                                    <option value="@option.Value" selected="@(string.Equals(option.Value, value, StringComparison.OrdinalIgnoreCase))">@option.Label</option>
+                                }
+                            </select>
+                            break;
+
+                        case FieldKind.Number:
+                            <input type="number"
+                                   id="@id"
+                                   name="@field.Name"
+                                   value="@value"
+                                   placeholder="@field.Placeholder"
+                                   min="@(double.IsNaN(field.Min) ? null : field.Min.ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                   max="@(double.IsNaN(field.Max) ? null : field.Max.ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                   required="@field.Required"
+                                   aria-describedby="@(describedBy.Length > 0 ? describedBy : null)" />
+                            break;
+
+                        case FieldKind.Password:
+                            <input type="password"
+                                   id="@id"
+                                   name="@field.Name"
+                                   placeholder="@field.Placeholder"
+                                   maxlength="@(field.MaxLength > 0 ? field.MaxLength : (int?)null)"
+                                   autocomplete="off"
+                                   required="@field.Required"
+                                   aria-describedby="@(describedBy.Length > 0 ? describedBy : null)" />
+                            break;
+
+                        default:
+                            <input type="text"
+                                   id="@id"
+                                   name="@field.Name"
+                                   value="@value"
+                                   placeholder="@field.Placeholder"
+                                   maxlength="@(field.MaxLength > 0 ? field.MaxLength : (int?)null)"
+                                   spellcheck="false"
+                                   autocomplete="off"
+                                   required="@field.Required"
+                                   aria-describedby="@(describedBy.Length > 0 ? describedBy : null)" />
+                            break;
+                    }
+                }
+
+                @if (field.Help is not null)
+                {
+                    <p class="field-help" id="@(id)-help">@field.Help</p>
+                }
+                @if (invalid)
+                {
+                    <p class="field-error" id="@(id)-error">@error</p>
+                }
+            </div>
+        }
+    </div>
+}

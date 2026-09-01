@@ -1,0 +1,11 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="error-page">
+    <p class="error-code">HTTP @Model.StatusCode</p>
+    <h1 class="error-title">@Model.Title</h1>
+    <p class="error-body">@Model.Message</p>
+    <a class="btn btn-primary" href="/">Back to the tools</a>
+</div>
