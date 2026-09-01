@@ -1,0 +1,143 @@
+name: CI
+
+# Every pull request runs the same checks a maintainer would run by hand, so an
+# external contribution is safe to merge on green rather than on trust.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'Directory.Build.props') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore
+        run: dotnet restore AdminForge.sln
+
+      - name: Check formatting
+        # Style is enforced from .editorconfig, so nobody has to leave a review
+        # comment about brace placement.
+        run: dotnet format AdminForge.sln --verify-no-changes --no-restore --verbosity diagnostic
+
+      - name: Build
+        run: dotnet build AdminForge.sln --configuration Release --no-restore -warnaserror
+
+      - name: Test
+        run: dotnet test AdminForge.sln --configuration Release --no-build --verbosity normal
+
+  javascript:
+    name: Browser tool modules
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test client-side tools
+        # No dependencies and no bundler: the modules use only platform APIs, so
+        # Node's built-in test runner is enough.
+        run: node --test "tests/js/*.test.mjs"
+
+  scaffold:
+    name: Scaffold still works
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Scaffold a server-side tool with each script
+        # The scaffold is the contributor on-ramp. If it ever stops producing code
+        # that builds and passes the contract tests, that has to fail here rather
+        # than in someone's first pull request.
+        run: |
+          pwsh ./tools/new-tool.ps1 -Name "Pwsh Scaffold Probe" -Category Ops
+          bash ./tools/new-tool.sh "Bash Scaffold Probe" Network
+          bash ./tools/new-tool.sh "Bash Client Probe" Encoding ClientSide code
+
+      - name: Build and test the scaffolded tools
+        run: dotnet test AdminForge.sln --configuration Release
+
+  docker:
+    name: Container image builds
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: adminforge:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Start the container and check it serves
+        run: |
+          docker run -d --name adminforge -p 8080:8080 adminforge:ci
+
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://localhost:8080/healthz > /dev/null 2>&1; then
+              echo "Container healthy after ${attempt}s"
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              echo "Container never became healthy."
+              docker logs adminforge
+              exit 1
+            fi
+            sleep 1
+          done
+
+          # The app refuses to start when a tool breaks the registry contract, so a
+          # successful gallery render also proves every tool registered cleanly.
+          curl -fsS http://localhost:8080/ | grep -q 'tool-card' || {
+            echo "The gallery rendered no tools."
+            docker logs adminforge
+            exit 1
+          }
+
+          docker rm -f adminforge

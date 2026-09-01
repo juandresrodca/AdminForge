@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions, ideas and show-and-tell
+    url: https://github.com/juandresrodca/AdminForge/discussions
+    about: Anything that is not a bug or a specific tool proposal.
+  - name: How to add a tool
+    url: https://github.com/juandresrodca/AdminForge/blob/main/CONTRIBUTING.md
+    about: The fifteen-minute guide, the scaffold script and the review checklist.
+  - name: Report a security issue
+    url: https://github.com/juandresrodca/AdminForge/security/advisories/new
+    about: Please report vulnerabilities privately rather than in a public issue.

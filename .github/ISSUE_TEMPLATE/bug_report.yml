@@ -1,0 +1,68 @@
+name: Bug report
+description: A tool gives the wrong answer, or AdminForge misbehaves
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A wrong answer from a tool is the most serious kind of bug this project can
+        have — people make changes based on what AdminForge tells them. Please include
+        the input you used so it can be turned into a regression test.
+
+  - type: input
+    id: tool
+    attributes:
+      label: Which tool?
+      description: The name, or the URL path.
+      placeholder: subnet-calculator
+    validations:
+      required: true
+
+  - type: textarea
+    id: input
+    attributes:
+      label: What did you put in?
+      description: >
+        The exact values. Replace anything sensitive with something that still
+        reproduces the problem.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect, and what did you get?
+      placeholder: |
+        Expected: 10.20.0.0/22 has 1,022 usable hosts
+        Got:      1,024
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: How are you running it?
+      options:
+        - Docker or docker compose
+        - dotnet run from source
+        - The public demo
+        - Something else
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or image tag
+      placeholder: ghcr.io/juandresrodca/adminforge:latest, or a commit SHA
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Anything in the logs?
+      description: >
+        `docker logs adminforge`, or the console output. The tool id is logged with
+        any unhandled exception.
+      render: shell

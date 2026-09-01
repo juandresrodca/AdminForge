@@ -1,0 +1,90 @@
+name: Propose a new tool
+description: Suggest a utility AdminForge should have
+title: "Add [tool name]"
+labels: ["new tool", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a tool.
+
+        AdminForge leans towards **sysadmin, IT and security** work rather than web
+        development — the question that decides most proposals is "would an admin or a
+        security engineer reach for this during an actual incident or change?"
+
+        If you want to build it yourself, say so at the bottom and it is yours.
+
+  - type: input
+    id: name
+    attributes:
+      label: Tool name
+      placeholder: MAC address / OUI vendor lookup
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Network
+        - Security
+        - Windows
+        - Identity
+        - Email
+        - Encoding
+        - Ops
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve?
+      description: >
+        The job someone is doing when they need it. Concrete beats abstract — "I have a
+        MAC from a DHCP lease and need to know whether it is a printer or a laptop"
+        tells us more than "vendor lookups are useful".
+    validations:
+      required: true
+
+  - type: dropdown
+    id: compute
+    attributes:
+      label: Where should it run?
+      description: >
+        Client-side for anything touching secrets, or anything that is pure text
+        transformation. Server-side when it needs the network or a dataset too large
+        to ship to the browser.
+      options:
+        - Client-side — runs in the browser, input never leaves the machine
+        - Server-side — needs network access or a large dataset
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: inputs_outputs
+    attributes:
+      label: Inputs and outputs
+      description: What the user types in, and what they should see back.
+      placeholder: |
+        Input:  a MAC address in any common notation (00:1A:2B:3C:4D:5E, 001A.2B3C.4D5E)
+        Output: the registered vendor, the OUI, the registry (MA-L / MA-M / MA-S),
+                and whether the address is locally administered or a multicast address
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: RFCs, registries, data sources, or an existing tool that gets it right.
+
+  - type: checkboxes
+    id: claim
+    attributes:
+      label: Would you like to build it?
+      options:
+        - label: Yes — assign this to me and I will open a pull request
+          required: false

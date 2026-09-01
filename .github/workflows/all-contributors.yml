@@ -1,0 +1,24 @@
+name: Credit a contributor
+
+# Anyone can add a contributor by commenting on an issue or pull request:
+#   @all-contributors please add @username for code, doc
+# Recognition is retention, so this deliberately does not require maintainer action.
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  credit:
+    name: Update the contributors list
+    if: contains(github.event.comment.body, '@all-contributors')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: all-contributors/all-contributors-action@v1.1.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
