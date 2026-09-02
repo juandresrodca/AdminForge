@@ -42,8 +42,8 @@ services:
     read_only: true
     tmpfs: [/tmp]
     environment:
-      # Homelab? Turn this on to let the network tools reach your LAN.
-      # Leave it off for anything reachable from the internet.
+      # Homelab? Turn this  on  to let the network tools reach your LAN.
+      # Leave it off for anything reachable  from the internet.
       AdminForge__AllowPrivateTargets: "false"
 ```
 
