@@ -260,6 +260,11 @@ Every contributor gets credited here, whatever the contribution —
 [all-contributors](https://allcontributors.org) counts documentation, bug reports,
 design and ideas alongside code.
 
+## Changelog
+
+Every release is documented in [CHANGELOG.md](CHANGELOG.md), including the tools
+currently accepted into the roadmap and open for contribution.
+
 ## Licence
 
 [MIT](LICENSE) © Juan Andres Rodriguez
