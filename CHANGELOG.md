@@ -21,14 +21,14 @@ Tools accepted into the roadmap and open for contribution. Grouped the same way 
   Wake-on-LAN packet builder ([#15]), URL redirect chain tracer ([#16]).
 - **Certificates and crypto** — X.509 certificate decoder ([#17]), CSR decoder ([#18]),
   hash identifier ([#19]), HMAC generator and verifier ([#20]), bcrypt generator and
-  verifier ([#21]), pwned-password check over HIBP k-anonymity ([#22]).
+  verifier ([#21]), pwned-password check over HIBP k-anonymity ([#22]),
+  security.txt validator ([#23]).
 - **Windows and Active Directory** — security event ID lookup ([#24]), PowerShell
   `-EncodedCommand` decoder ([#25]), `userAccountControl` decoder ([#26]),
   well-known SID resolver ([#27]), LDAP filter builder and validator ([#28]).
 - **Mail** — email header analyser ([#29]), DMARC record builder ([#30]).
 - **Calculators** — uptime and SLA percentage ([#31]), RAID capacity ([#32]),
-  storage and data-rate units ([#33]), chmod and Unix permissions ([#34]),
-  security.txt validator ([#23]).
+  storage and data-rate units ([#33]), chmod and Unix permissions ([#34]).
 
 New tools are added through the scaffold described in
 [`CONTRIBUTING.md`](CONTRIBUTING.md); a tool is one folder under

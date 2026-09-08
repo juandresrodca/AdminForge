@@ -170,35 +170,15 @@ and the SSRF guard fit together.
 
 ### Good first issues
 
-Around thirty tools are specified and waiting, each with acceptance criteria. Comment
-on one and it is yours.
+Twenty-five tools are specified and waiting, each with acceptance criteria already
+written. Comment on one and it is yours.
+
+**[→ The roadmap](docs/ROADMAP.md)** — all twenty-five grouped by category, with an
+effort estimate on each and a shortlist of the five shortest paths from `git clone` to
+a merged pull request.
 
 **[→ Browse the `good first issue` list](https://github.com/juandresrodca/AdminForge/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)**
-
-<details>
-<summary>The roadmap, at a glance</summary>
-
-**Network** — MAC/OUI vendor lookup · IP geolocation and ASN · TCP port reachability ·
-reverse DNS bulk lookup · subnet splitter and VLSM planner · Wake-on-LAN packet builder ·
-URL redirect chain tracer
-
-**Security** — X.509 certificate decoder · CSR decoder · hash identifier · HMAC generator
-and verifier · bcrypt generator and verifier · pwned password checker (k-anonymity) ·
-security.txt validator
-
-**Windows and identity** — Windows security event ID lookup · PowerShell
-`-EncodedCommand` decoder · Active Directory `userAccountControl` decoder · well-known
-SID resolver · LDAP filter builder
-
-**Email** — email header analyser · DMARC record builder
-
-**Ops** — uptime and SLA calculator · RAID capacity calculator · storage and data-rate
-converter · chmod calculator
-
-Plus the easy on-ramps deliberately left unbuilt: GUID generator, timestamp converter,
-JSON formatter, regex tester.
-
-</details>
+— the same set, sorted by GitHub rather than by category.
 
 ---
 
