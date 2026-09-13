@@ -7,6 +7,10 @@
 Subnets, certificates, DNS, mail records, Windows error codes and the rest of the daily
 lookups — in one container you run yourself.
 
+**No sign-up, no accounts, no telemetry.** The JWT decoder, password generator, hash
+generator and encoder never send what you type anywhere; the other eight tools run on
+the AdminForge instance itself — your own, when you self-host.
+
 [![CI](https://img.shields.io/github/actions/workflow/status/juandresrodca/AdminForge/ci.yml?branch=main&style=flat-square&label=CI&labelColor=0a0e16&color=9fef00)](https://github.com/juandresrodca/AdminForge/actions/workflows/ci.yml)
 [![.NET 10](https://img.shields.io/badge/.NET-10.0%20LTS-9fef00?style=flat-square&labelColor=0a0e16)](https://dotnet.microsoft.com/)
 [![Licence: MIT](https://img.shields.io/badge/licence-MIT-9fef00?style=flat-square&labelColor=0a0e16)](LICENSE)
@@ -73,14 +77,16 @@ five open tabs.
 
 AdminForge is the same idea pointed at **infrastructure work**:
 
-- **Self-hosted, in one container.** Your queries stay on your network. The certificate
-  you are checking, the domain you are auditing, the token you are decoding — none of it
-  goes to somebody else's server.
+- **Self-hosted, in one container.** Lookups run from your own instance rather than
+  through somebody else's website, so the certificate you are checking, the domain you
+  are auditing and the token you are decoding are never handed to a third-party toolbox.
 - **Honest about where your data goes.** Every tool is labelled `In browser` or
   `Server side`, and anything that could touch a secret is built to run in the browser
   and never make a request at all.
-- **No third-party requests, ever.** No CDN, no analytics, no telemetry, no web fonts.
-  It works in an air-gapped network.
+- **No third-party requests of its own.** No CDN, no analytics, no telemetry, no web
+  fonts. A tool connects out only when it has to — to the host you are checking, your
+  DNS resolver, or, for registration lookups, rdap.org and the registry it redirects
+  to. The app itself works air-gapped.
 - **Tilted at sysadmins and security**, not at front-end work. That is the whole point.
 
 ---
