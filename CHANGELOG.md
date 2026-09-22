@@ -11,6 +11,14 @@ Container images are published to
 
 ## [Unreleased]
 
+### Added
+
+- [`docs/self-hosting.md`](docs/self-hosting.md): the deployment half of the README —
+  reverse proxy and TLS, why a proxy is not optional given that `UseForwardedHeaders`
+  trusts `X-Forwarded-For` from any caller and the rate limiter partitions on the
+  result, the `AllowPrivateTargets` decision table, the seven tools that work with no
+  egress and how to load the image onto an air-gapped host, and updating.
+
 ### Planned
 
 Tools accepted into the roadmap and open for contribution. Grouped the same way as

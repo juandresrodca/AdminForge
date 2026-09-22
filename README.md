@@ -66,6 +66,10 @@ dotnet run --project src/AdminForge.Web
 
 </details>
 
+Running it for more than yourself — reverse proxy and TLS, the authentication
+AdminForge deliberately does not have, the `AllowPrivateTargets` decision, air-gapped
+hosts and updates: **[→ Self-hosting guide](docs/self-hosting.md)**.
+
 ---
 
 ## Why this exists
@@ -204,6 +208,9 @@ Set through `appsettings.json` or `AdminForge__*` environment variables.
 | `RateLimit__WindowSeconds` | `60` | Length of that window. |
 
 Invalid values fail at startup rather than at the first request.
+[docs/self-hosting.md](docs/self-hosting.md) covers which of these actually matter for
+a given deployment, and why an instance reachable from a network wants a reverse proxy
+in front of it.
 
 ---
 
