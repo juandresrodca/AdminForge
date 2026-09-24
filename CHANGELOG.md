@@ -13,6 +13,11 @@ Container images are published to
 
 ### Added
 
+- [`ARCHITECTURE.md`](ARCHITECTURE.md): three Mermaid diagrams for the parts that were
+  prose only — the startup discovery pipeline and its fail-the-build gate, the request
+  path through the single controller including the progressive-enhancement branch, and
+  the three outbound-target checkpoints and the window each one closes. GitHub renders
+  them inline; the existing ASCII diagrams are untouched.
 - [`docs/self-hosting.md`](docs/self-hosting.md): the deployment half of the README —
   reverse proxy and TLS, why a proxy is not optional given that `UseForwardedHeaders`
   trusts `X-Forwarded-For` from any caller and the rate limiter partitions on the

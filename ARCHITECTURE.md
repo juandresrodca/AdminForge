@@ -118,6 +118,17 @@ At startup, `ServiceCollectionExtensions.AddAdminForge` calls:
 3. **`ToolDiscovery.BuildDescriptors`** — instantiates each tool inside a throwaway
    scope, validates it, and snapshots its metadata into a `ToolDescriptor`.
 
+```mermaid
+flowchart TD
+    A["AddAdminForge(configuration, toolAssemblies)"] --> B["ToolDiscovery.FindToolTypes<br/>reflect over the tools assembly"]
+    B --> C["services.AddScoped(toolType)<br/>one registration per tool"]
+    C --> D["ToolDiscovery.BuildDescriptors<br/>instantiate each tool in a throwaway scope"]
+    D --> E{"does every tool<br/>satisfy the contract?"}
+    E -- "no" --> F["ToolRegistrationException<br/>every problem reported at once<br/>— startup fails"]
+    E -- "yes" --> G["ToolDescriptor<br/>metadata snapshot, no tool instance<br/>+ pre-bound IHandlerInvoker"]
+    G --> H["IToolRegistry<br/>the catalogue Web reads"]
+```
+
 `BuildDescriptors` **fails the whole startup** if any tool breaks the contract, and it
 reports every problem at once rather than the first:
 
@@ -165,6 +176,27 @@ JavaScript disabled. When JavaScript is on, `adminforge.js` intercepts the submi
 posts with an `X-AdminForge-Partial` header, and swaps in just the result fragment.
 Same controller action, same markup, two delivery modes.
 
+The whole of that, as one picture:
+
+```mermaid
+flowchart TD
+    Browser["browser"] -->|"POST /tools/{id}"| Execute["ToolsController.Execute<br/>the only action any tool posts to"]
+    Execute --> Lookup["registry.Find(id)"]
+    Lookup -->|"no such id"| E404["404"]
+    Lookup -->|"ComputeMode.ClientSide"| E400["400 — a client-side tool never posts"]
+    Lookup -->|"ComputeMode.ServerSide"| Bind["ToolInputBinder.Bind<br/>against the descriptor that rendered the form"]
+    Bind -->|"validation errors"| Shape
+    Bind -->|"model bound"| Resolve["resolve the tool from the request scope<br/>a fresh instance per run"]
+    Resolve --> Invoke["IHandlerInvoker.ExecuteAsync<br/>linked CTS, ToolTimeoutSeconds budget"]
+    Invoke -->|"timeout or unhandled exception"| Failed["ToolResult.Fail<br/>logged with the tool id"]
+    Invoke -->|"completed"| Blocks["ToolResult — a list of ResultBlocks"]
+    Failed --> Shape
+    Blocks --> Shape{"X-AdminForge-Partial<br/>header present?"}
+    Shape -->|"yes"| Fragment["_ToolOutcome partial<br/>swapped in by adminforge.js"]
+    Shape -->|"no"| Page["the whole page<br/>works with JavaScript off"]
+```
+
+
 ---
 
 ## Security
@@ -187,6 +219,27 @@ permitted public URL is otherwise free to redirect to an internal one.
 **The connect callback** on the shared `SocketsHttpHandler` resolves the target again
 immediately before connecting and refuses private addresses at the socket. That closes
 the window between the DNS check and the connection.
+
+Three checkpoints, at three different moments, because each one closes a window the
+previous one leaves open:
+
+```mermaid
+flowchart TD
+    Url["a target typed by the user"] --> C1["1 · before the request<br/>IOutboundTargetValidator.ValidateUrlAsync<br/>resolve the host, refuse loopback, RFC 1918,<br/>link-local (169.254.169.254), CGNAT, ULA,<br/>multicast, documentation — and any mixed result"]
+    C1 -->|"refused"| Stop["no request is made"]
+    C1 -->|"allowed"| Fetch["SafeHttpFetcher.FetchAsync"]
+    Fetch --> C3["3 · at the socket<br/>connect callback on the shared SocketsHttpHandler<br/>resolves again immediately before connecting"]
+    C3 -->|"private address"| Stop
+    C3 -->|"public address"| Response["response, capped at MaxResponseBytes"]
+    Response --> Redirect{"a redirect,<br/>within MaxRedirects?"}
+    Redirect -->|"no"| Done["returned to the tool"]
+    Redirect -->|"yes"| C2["2 · per hop<br/>re-validate the Location target<br/>redirects are followed by hand, never by HttpClient"]
+    C2 -->|"refused"| Stop
+    C2 -->|"allowed"| Fetch
+```
+
+Checkpoint 1 alone is not enough: DNS can answer differently the second time it is
+asked, and a permitted public URL is free to redirect somewhere it was not.
 
 Beyond that: a strict content security policy with no inline script or style and no
 third-party origins, a per-client fixed-window rate limiter on tool execution, and no
