@@ -14,7 +14,8 @@ public static class IpAddressRules
     /// True when the address belongs to a range that is not a legitimate public
     /// target: loopback, private, link-local (including cloud instance metadata at
     /// 169.254.169.254), carrier-grade NAT, unique-local, multicast, benchmarking,
-    /// documentation, or the unspecified address.
+    /// documentation, the unspecified address, or an IPv6 form that embeds an IPv4
+    /// address (IPv4-compatible, 6to4, NAT64).
     /// </summary>
     /// <param name="address">The address to classify.</param>
     public static bool IsPrivateOrReserved(IPAddress address)
@@ -95,7 +96,26 @@ public static class IpAddressRules
             return true;
         }
 
-        // 64:ff9b::/96 NAT64 — resolves to an embedded IPv4 we cannot vet here.
+        // ::/96 IPv4-compatible (deprecated) — carries an embedded IPv4 such as ::7f00:1.
+        if (b[..12].IndexOfAnyExcept((byte)0) < 0)
+        {
+            return true;
+        }
+
+        // 100::/64 discard-only
+        if (b[0] == 0x01 && b[1] == 0x00 && b[2..8].IndexOfAnyExcept((byte)0) < 0)
+        {
+            return true;
+        }
+
+        // 2002::/16 6to4 — embeds an IPv4 address, which may well be a private one.
+        if (b[0] == 0x20 && b[1] == 0x02)
+        {
+            return true;
+        }
+
+        // 64:ff9b::/32, covering NAT64 (64:ff9b::/96) and local-use NAT64 (64:ff9b:1::/48) —
+        // resolves to an embedded IPv4 we cannot vet here.
         return b[0] == 0x00 && b[1] == 0x64 && b[2] == 0xFF && b[3] == 0x9B;
     }
 }

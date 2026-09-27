@@ -202,7 +202,8 @@ Set through `appsettings.json` or `AdminForge__*` environment variables.
 | `ToolTimeoutSeconds` | `15` | Budget for a single tool run. |
 | `MaxResponseBytes` | `2097152` | Ceiling on any fetched response body. |
 | `MaxRedirects` | `5` | Redirects followed, each re-validated. |
-| `BlockedHosts` | `[]` | Extra hosts to refuse. |
+| `BlockedHosts` | `[]` | Extra hosts to refuse, including their subdomains and the addresses they resolve to. |
+| `TrustedProxies` | `[]` | Reverse proxies (IPs or CIDR ranges) whose `X-Forwarded-For` is believed. Loopback is always trusted. |
 | `InstanceBanner` | — | Notice shown on every page, e.g. to mark a public demo. |
 | `RateLimit__PermitLimit` | `30` | Tool runs allowed per client, per window. |
 | `RateLimit__WindowSeconds` | `60` | Length of that window. |

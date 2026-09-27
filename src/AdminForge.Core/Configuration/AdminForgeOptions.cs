@@ -35,6 +35,18 @@ public sealed class AdminForgeOptions
     /// </summary>
     public IList<string> BlockedHosts { get; set; } = [];
 
+    /// <summary>
+    /// Reverse proxies whose <c>X-Forwarded-For</c> header is believed, as IP literals or
+    /// CIDR ranges such as <c>172.16.0.0/12</c>. Loopback is always trusted.
+    /// <para>
+    /// The rate limiter partitions on the client address, so trusting the header from
+    /// anyone would let a caller pick a fresh address on every request and never be
+    /// throttled. Name the proxy's address here when it is not on loopback, for
+    /// example the Docker network a proxy container shares with AdminForge.
+    /// </para>
+    /// </summary>
+    public IList<string> TrustedProxies { get; set; } = [];
+
     /// <summary>Request throttling for server-side tools.</summary>
     public RateLimitOptions RateLimit { get; set; } = new();
 

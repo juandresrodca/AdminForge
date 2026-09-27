@@ -66,7 +66,10 @@ public sealed class CronParserTool : ITool, IToolHandler<CronParserInput>
         }
 
         string expanded = Macros.TryGetValue(raw, out string? macro) ? macro : raw;
-        string[] fields = expanded.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        // Crontab separates fields with any whitespace, and a pasted line often has tabs.
+        string[] fields = expanded.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
+        expanded = string.Join(' ', fields);
 
         if (fields.Length is not (5 or 6))
         {

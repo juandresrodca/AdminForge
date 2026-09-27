@@ -39,7 +39,9 @@ public sealed class ToolsController(
 
         if (tool is null)
         {
-            return RedirectToAction(nameof(ErrorController.Index), "Error", new { code = 404 });
+            // A real 404 rather than a redirect, so crawlers and scripts see the tool is
+            // gone. The status-code pages middleware still renders the friendly page.
+            return NotFound();
         }
 
         // A canonical id keeps one URL per tool rather than one per casing.
@@ -62,7 +64,7 @@ public sealed class ToolsController(
 
         if (tool is null)
         {
-            return RedirectToAction(nameof(ErrorController.Index), "Error", new { code = 404 });
+            return NotFound();
         }
 
         if (tool.Compute != ComputeMode.ServerSide)

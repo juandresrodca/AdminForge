@@ -14,6 +14,10 @@
     <ProjectReference Include="..\AdminForge.Core\AdminForge.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="AdminForge.Tests" />
+  </ItemGroup>
+
   <ItemGroup Label="Tool datasets">
     <!-- Data-only tool content. Adding entries to these files is a pull request with no C# in it. -->
     <EmbeddedResource Include="**\*.json" />

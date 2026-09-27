@@ -39,10 +39,20 @@ public sealed class ErrorController : Controller
 {
     /// <summary>Renders a friendly page for the given status code.</summary>
     /// <param name="code">The HTTP status code. Defaults to 500.</param>
-    [HttpGet("")]
-    [HttpGet("{code:int}")]
+    // Not limited to GET: the status-code pages middleware re-executes with the original
+    // method, so a throttled or failed POST lands here as a POST and would otherwise
+    // turn its 429 or 500 into a 405.
+    [Route("")]
+    [Route("{code:int}")]
     public IActionResult Index(int code = 500)
     {
+        // The code comes from the URL, and Kestrel throws on a status outside 100-999.
+        // Anything that is not an error status is shown as a generic failure.
+        if (code is < 400 or > 599)
+        {
+            code = 500;
+        }
+
         (string title, string message) = code switch
         {
             404 => ("Tool not found", "That tool does not exist. It may have been renamed — check the gallery."),

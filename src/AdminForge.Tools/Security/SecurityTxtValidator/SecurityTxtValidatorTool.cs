@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using AdminForge.Core.Net;
 using AdminForge.Core.Results;
 using AdminForge.Core.Tools;
@@ -10,11 +11,32 @@ namespace AdminForge.Tools.Security.SecurityTxtValidator;
 /// delivery location so vulnerability reports have a current route to the right team.
 /// </summary>
 /// <param name="fetcher">The vetted, size-capped HTTP client.</param>
-public sealed class SecurityTxtValidatorTool(SafeHttpFetcher fetcher)
+public sealed partial class SecurityTxtValidatorTool(SafeHttpFetcher fetcher)
     : ITool, IToolHandler<SecurityTxtValidatorInput>
 {
     private const string WellKnownPath = "/.well-known/security.txt";
     private const string LegacyPath = "/security.txt";
+
+    /// <summary>
+    /// RFC 9116 requires Expires in the RFC 3339 date-time format. A lenient parse would
+    /// also take forms such as 12/31/2027, which parsers of the file are not required to
+    /// understand, so the shape is checked before the value.
+    /// </summary>
+    internal static bool TryParseRfc3339(string? value, out DateTimeOffset result)
+    {
+        result = default;
+
+        return value is not null
+            && Rfc3339().IsMatch(value)
+            && DateTimeOffset.TryParse(
+                value,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AdjustToUniversal,
+                out result);
+    }
+
+    [GeneratedRegex(@"^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(\.\d+)?([Zz]|[+-]\d{2}:\d{2})$", RegexOptions.CultureInvariant)]
+    private static partial Regex Rfc3339();
 
     private static readonly string[] FieldOrder =
     [
@@ -130,11 +152,7 @@ public sealed class SecurityTxtValidatorTool(SafeHttpFetcher fetcher)
             && string.Equals(finalUri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
         string? contact = First(parsed.Fields, "Contact");
         string? expiresText = First(parsed.Fields, "Expires");
-        bool hasExpires = DateTimeOffset.TryParse(
-            expiresText,
-            CultureInfo.InvariantCulture,
-            DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
-            out DateTimeOffset expires);
+        bool hasExpires = TryParseRfc3339(expiresText, out DateTimeOffset expires);
         bool expired = hasExpires && expires <= DateTimeOffset.UtcNow;
         var missing = new List<string>();
 
@@ -157,7 +175,7 @@ public sealed class SecurityTxtValidatorTool(SafeHttpFetcher fetcher)
 
         if (!string.IsNullOrWhiteSpace(expiresText) && !hasExpires)
         {
-            findings.Add("Expires is not a valid ISO 8601 date.");
+            findings.Add("Expires is not an RFC 3339 date-time such as 2027-01-31T23:59:59Z.");
         }
         else if (expired)
         {

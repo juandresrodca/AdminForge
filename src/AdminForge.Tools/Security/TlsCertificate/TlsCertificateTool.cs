@@ -57,6 +57,11 @@ public sealed class TlsCertificateTool(IOutboundTargetValidator validator, IOpti
     {
         ArgumentNullException.ThrowIfNull(input);
 
+        if (input.Port is < 1 or > 65535)
+        {
+            return ToolResult.Fail("The port must be between 1 and 65535.");
+        }
+
         TargetValidation validation = await validator
             .ValidateHostAsync(input.Host, cancellationToken)
             .ConfigureAwait(false);
@@ -64,11 +69,6 @@ public sealed class TlsCertificateTool(IOutboundTargetValidator validator, IOpti
         if (!validation.IsAllowed)
         {
             return ToolResult.Fail(validation.Reason!);
-        }
-
-        if (input.Port is < 1 or > 65535)
-        {
-            return ToolResult.Fail("The port must be between 1 and 65535.");
         }
 
         string sni = string.IsNullOrWhiteSpace(input.ServerName) ? validation.Host : input.ServerName.Trim();
@@ -88,7 +88,7 @@ public sealed class TlsCertificateTool(IOutboundTargetValidator validator, IOpti
         }
 
         X509Certificate2? leaf = null;
-        X509Chain? chain = null;
+        IReadOnlyList<ChainEntry> chain = [];
         SslPolicyErrors policyErrors = SslPolicyErrors.None;
 
         // The handshake is allowed to complete even when validation fails: inspecting a
@@ -96,7 +96,10 @@ public sealed class TlsCertificateTool(IOutboundTargetValidator validator, IOpti
         await using var tls = new SslStream(socket.GetStream(), leaveInnerStreamOpen: false, (_, certificate, builtChain, errors) =>
         {
             leaf = certificate is null ? null : new X509Certificate2(certificate);
-            chain = builtChain;
+
+            // SslStream disposes the chain and its certificates as soon as this callback
+            // returns, so what the result needs is copied out now.
+            chain = SnapshotChain(builtChain);
             policyErrors = errors;
             return true;
         });
@@ -132,7 +135,7 @@ public sealed class TlsCertificateTool(IOutboundTargetValidator validator, IOpti
 
     private static ToolResult BuildResult(
         X509Certificate2 leaf,
-        X509Chain? chain,
+        IReadOnlyList<ChainEntry> chain,
         SslPolicyErrors policyErrors,
         SslStream tls,
         string host,
@@ -200,19 +203,17 @@ public sealed class TlsCertificateTool(IOutboundTargetValidator validator, IOpti
             names.Select(IReadOnlyList<TableCell> (n) => [new TableCell(n, Monospace: true)]).ToList(),
             "This certificate carries no SAN extension. Modern clients require one.");
 
-        if (chain is not null && chain.ChainElements.Count > 0)
+        if (chain.Count > 0)
         {
             result.Table(
                 "Chain",
                 ["#", "Subject", "Issuer", "Expires"],
-                chain.ChainElements.Select(IReadOnlyList<TableCell> (element, index) =>
+                chain.Select(IReadOnlyList<TableCell> (entry, index) =>
                 [
                     new TableCell((index + 1).ToString(CultureInfo.InvariantCulture)),
-                    new TableCell(ShortName(element.Certificate.Subject), Monospace: true),
-                    new TableCell(ShortName(element.Certificate.Issuer), Monospace: true),
-                    new TableCell(
-                        element.Certificate.NotAfter.ToUniversalTime().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-                        Monospace: true),
+                    new TableCell(ShortName(entry.Subject), Monospace: true),
+                    new TableCell(ShortName(entry.Issuer), Monospace: true),
+                    new TableCell(entry.NotAfter.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), Monospace: true),
                 ]).ToList());
         }
 
@@ -223,6 +224,15 @@ public sealed class TlsCertificateTool(IOutboundTargetValidator validator, IOpti
 
         return result.ToResult();
     }
+
+    /// <summary>Copy what the result shows out of a chain that is about to be disposed.</summary>
+    /// <param name="chain">The chain SslStream built, if any.</param>
+    internal static IReadOnlyList<ChainEntry> SnapshotChain(X509Chain? chain) =>
+        chain is null
+            ? []
+            : chain.ChainElements
+                .Select(e => new ChainEntry(e.Certificate.Subject, e.Certificate.Issuer, e.Certificate.NotAfter.ToUniversalTime()))
+                .ToList();
 
     private static IReadOnlyList<string> SubjectAlternativeNames(X509Certificate2 certificate)
     {
@@ -299,3 +309,9 @@ public sealed class TlsCertificateTool(IOutboundTargetValidator validator, IOpti
         _ => ResultStatus.Danger,
     };
 }
+
+/// <summary>One certificate of the presented chain, detached from the disposable chain object.</summary>
+/// <param name="Subject">Subject distinguished name.</param>
+/// <param name="Issuer">Issuer distinguished name.</param>
+/// <param name="NotAfter">Expiry, in UTC.</param>
+internal sealed record ChainEntry(string Subject, string Issuer, DateTime NotAfter);

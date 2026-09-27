@@ -24,6 +24,32 @@ Container images are published to
   result, the `AllowPrivateTargets` decision table, the seven tools that work with no
   egress and how to load the image onto an air-gapped host, and updating.
 
+### Changed
+
+- **Rate limiting can no longer be bypassed with a forged `X-Forwarded-For`.** The
+  header is now believed only from loopback and from the new `AdminForge:TrustedProxies`
+  setting (IPs or CIDR ranges). A proxy that is not on loopback — e.g. a proxy container
+  on the same Docker network — must be listed there, or every user shares one bucket.
+- `BlockedHosts` also blocks subdomains of a blocked name, and entries may be IP
+  addresses or CIDR ranges checked against every resolved address, including at connect time.
+- IPv4-compatible (`::/96`), 6to4 (`2002::/16`) and discard-only (`100::/64`) IPv6
+  addresses are refused as targets.
+
+### Fixed
+
+- SPF, DKIM and DMARC checker: SPF is read term by term, so a bare `all` is reported as
+  pass-anything, `-all` inside another term is no longer mistaken for the all mechanism,
+  `a/24` and `mx/24` count as lookups, and the lookup count follows nested includes and
+  redirects. Duplicate SPF or DMARC records are flagged as the errors they are. A DKIM
+  key is recognised by its `p=` tag, and an empty one is shown as revoked.
+- TLS certificate checker: the chain table is populated. The chain was read after
+  `SslStream` had already disposed it.
+- An unknown tool returns a real 404 instead of a redirect; `/error/{code}` no longer
+  throws on a code outside 400–599; and a throttled POST is reported as 429 rather than 405.
+- Subnet calculator rejects IPv4 shorthand such as `10/8`, which parsed as `0.0.0.10/8`.
+- security.txt validator requires `Expires` in RFC 3339 format, as RFC 9116 does.
+- Cron parser accepts tabs between fields.
+
 ### Planned
 
 Tools accepted into the roadmap and open for contribution. Grouped the same way as

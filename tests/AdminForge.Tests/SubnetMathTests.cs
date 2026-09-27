@@ -132,4 +132,12 @@ public sealed class SubnetMathTests
         Assert.False(facts!.IsIPv6);
         Assert.Equal(IPAddress.Parse("10.0.0.0"), facts.Network);
     }
+
+    [Theory]
+    [InlineData("10/8")]
+    [InlineData("10.1/16")]
+    [InlineData("0x0a.0.0.0/8")]
+    [InlineData("10.0.0.0 255.255")]
+    public void Rejects_ipv4_shorthand_that_parses_as_a_different_address(string input) =>
+        Assert.False(SubnetMath.TryParse(input, out _, out _));
 }

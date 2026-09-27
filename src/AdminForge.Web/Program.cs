@@ -54,11 +54,12 @@ builder.Services.AddRateLimiter(limiter =>
 
 // Behind a reverse proxy — the normal self-hosted setup — the client address arrives in a
 // forwarded header. Without this the rate limiter would see one partition for everyone.
+// The header is only believed from loopback and the configured proxies: trusting it from
+// any caller would let a client invent a new address per request and dodge the limiter.
 builder.Services.Configure<ForwardedHeadersOptions>(o =>
 {
     o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-    o.KnownIPNetworks.Clear();
-    o.KnownProxies.Clear();
+    TrustedProxies.Apply(o, builder.Configuration.GetSection("AdminForge:TrustedProxies").Get<string[]>());
 });
 
 WebApplication app = builder.Build();

@@ -95,24 +95,40 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
 
         var client = new LookupClient(clientOptions);
 
-        Task<string?> spfTask = FirstTxtStartingWithAsync(client, domain, "v=spf1", cancellationToken);
-        Task<string?> dmarcTask = FirstTxtStartingWithAsync(client, "_dmarc." + domain, "v=DMARC1", cancellationToken);
+        Task<IReadOnlyList<string>> spfTask = SpfRecordsAsync(client, domain, cancellationToken);
+        Task<IReadOnlyList<string>> dmarcTask = DmarcRecordsAsync(client, domain, cancellationToken);
         Task<IReadOnlyList<(string Selector, string Record)>> dkimTask =
             ProbeDkimAsync(client, domain, input.Selectors, cancellationToken);
         Task<IReadOnlyList<MxRecord>> mxTask = MxAsync(client, domain, cancellationToken);
 
         await Task.WhenAll(spfTask, dmarcTask, dkimTask, mxTask).ConfigureAwait(false);
 
-        string? spf = await spfTask.ConfigureAwait(false);
-        string? dmarc = await dmarcTask.ConfigureAwait(false);
+        IReadOnlyList<string> spfRecords = await spfTask.ConfigureAwait(false);
+        IReadOnlyList<string> dmarcRecords = await dmarcTask.ConfigureAwait(false);
         IReadOnlyList<(string Selector, string Record)> dkim = await dkimTask.ConfigureAwait(false);
         IReadOnlyList<MxRecord> mx = await mxTask.ConfigureAwait(false);
 
+        string? spf = spfRecords.Count > 0 ? spfRecords[0] : null;
+        string? dmarc = dmarcRecords.Count > 0 ? dmarcRecords[0] : null;
+
+        // Includes are followed only when the record is usable at all: two SPF records
+        // are a permerror before a single lookup happens.
+        int spfLookups = spf is null || spfRecords.Count > 1
+            ? 0
+            : await SpfRecord.CountLookupsAsync(
+                spf,
+                async (name, token) =>
+                {
+                    IReadOnlyList<string> nested = await SpfRecordsAsync(client, name, token).ConfigureAwait(false);
+                    return nested.Count == 1 ? nested[0] : null;
+                },
+                cancellationToken).ConfigureAwait(false);
+
         ResultBuilder result = ToolResult.Build();
 
-        AppendVerdict(result, domain, spf, dmarc, dkim.Count > 0);
-        AppendSpf(result, spf);
-        AppendDmarc(result, dmarc);
+        AppendVerdict(result, domain, spfRecords, dmarcRecords, dkim.Any(d => !IsRevokedDkim(d.Record)));
+        AppendSpf(result, spfRecords, spfLookups);
+        AppendDmarc(result, dmarcRecords);
         AppendDkim(result, dkim);
         AppendMx(result, mx);
 
@@ -122,14 +138,17 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
     private static void AppendVerdict(
         ResultBuilder result,
         string domain,
-        string? spf,
-        string? dmarc,
+        IReadOnlyList<string> spfRecords,
+        IReadOnlyList<string> dmarcRecords,
         bool anyDkim)
     {
-        string policy = ReadTag(dmarc, "p") ?? "none";
+        // More than one record of either kind is an error receivers treat as "none".
+        string? spf = spfRecords.Count == 1 ? spfRecords[0] : null;
+        string? dmarc = dmarcRecords.Count == 1 ? dmarcRecords[0] : null;
+        string policy = ReadTag(dmarc, "p")?.ToLowerInvariant() ?? "none";
         bool enforcing = policy is "quarantine" or "reject";
-        bool spfStrict = spf is not null && (spf.Contains("-all", StringComparison.OrdinalIgnoreCase)
-                                             || spf.Contains("~all", StringComparison.OrdinalIgnoreCase));
+        char? allQualifier = spf is null ? null : SpfRecord.AllQualifier(spf);
+        bool spfStrict = allQualifier is '-' or '~';
 
         (ResultStatus status, string message, string detail) = (spf, dmarc) switch
         {
@@ -157,7 +176,12 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
             _ when enforcing => (
                 ResultStatus.Warning,
                 $"DMARC is {policy}, but SPF does not close the door",
-                "SPF ends in +all or has no all mechanism, so it authorises every sender."),
+                allQualifier switch
+                {
+                    '+' => "SPF ends in +all (or a bare all), so it authorises every sender.",
+                    '?' => "SPF ends in ?all, so unlisted senders get a neutral result rather than a fail.",
+                    _ => "SPF has no all mechanism, so unlisted senders get a neutral result rather than a fail.",
+                }),
 
             _ => (
                 ResultStatus.Warning,
@@ -170,19 +194,39 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
             detail += " No DKIM selector was found, so forwarded mail will likely fail alignment.";
         }
 
+        if (spfRecords.Count > 1 || dmarcRecords.Count > 1)
+        {
+            (status, message) = (ResultStatus.Danger, "Duplicate records break mail authentication");
+            detail = "More than one "
+                + (spfRecords.Count > 1 ? "SPF" : "DMARC")
+                + " record is published, which receivers treat as an error and ignore. Merge them into one.";
+        }
+
         result.Status(status, message, $"{domain} — {detail}");
     }
 
-    private static void AppendSpf(ResultBuilder result, string? spf)
+    private static void AppendSpf(ResultBuilder result, IReadOnlyList<string> spfRecords, int lookups)
     {
-        if (spf is null)
+        if (spfRecords.Count == 0)
         {
             result.Status(ResultStatus.Danger, "No SPF record", "Nothing at the domain apex starts with v=spf1.", "SPF");
             return;
         }
 
-        int lookups = CountSpfLookups(spf);
-        string qualifier = ReadAllMechanism(spf);
+        if (spfRecords.Count > 1)
+        {
+            result.Status(
+                ResultStatus.Danger,
+                $"{spfRecords.Count} SPF records published",
+                "RFC 7208 requires exactly one. With several, receivers return permerror and SPF fails for every "
+                + "message. Merge them into a single record.",
+                "SPF");
+            result.List("SPF records", spfRecords);
+            return;
+        }
+
+        string spf = spfRecords[0];
+        string qualifier = SpfRecord.Describe(SpfRecord.AllQualifier(spf));
 
         result.KeyValues("SPF", kv =>
         {
@@ -197,12 +241,14 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
             });
             kv.Add(
                 "DNS lookups used",
-                $"{lookups} of 10",
-                lookups > 10 ? ResultStatus.Danger : lookups >= 8 ? ResultStatus.Warning : ResultStatus.Ok,
+                lookups > SpfRecord.LookupLimit
+                    ? $"more than {SpfRecord.LookupLimit}, including nested includes"
+                    : $"{lookups} of {SpfRecord.LookupLimit}, including nested includes",
+                lookups > SpfRecord.LookupLimit ? ResultStatus.Danger : lookups >= 8 ? ResultStatus.Warning : ResultStatus.Ok,
                 monospace: true);
         });
 
-        if (lookups > 10)
+        if (lookups > SpfRecord.LookupLimit)
         {
             result.Status(
                 ResultStatus.Danger,
@@ -213,8 +259,22 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
         }
     }
 
-    private static void AppendDmarc(ResultBuilder result, string? dmarc)
+    private static void AppendDmarc(ResultBuilder result, IReadOnlyList<string> dmarcRecords)
     {
+        if (dmarcRecords.Count > 1)
+        {
+            result.Status(
+                ResultStatus.Danger,
+                $"{dmarcRecords.Count} DMARC records published",
+                "RFC 7489 says a receiver that finds more than one record applies no DMARC policy at all. "
+                + "Keep exactly one.",
+                "DMARC");
+            result.List("DMARC records", dmarcRecords);
+            return;
+        }
+
+        string? dmarc = dmarcRecords.Count == 1 ? dmarcRecords[0] : null;
+
         if (dmarc is null)
         {
             result.Status(
@@ -225,7 +285,7 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
             return;
         }
 
-        string policy = ReadTag(dmarc, "p") ?? "none";
+        string policy = ReadTag(dmarc, "p")?.ToLowerInvariant() ?? "none";
         string? subdomainPolicy = ReadTag(dmarc, "sp");
         string percent = ReadTag(dmarc, "pct") ?? "100";
 
@@ -255,8 +315,10 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
             ["Selector", "Key type", "Record"],
             dkim.Select(IReadOnlyList<TableCell> (d) =>
             [
-                new TableCell(d.Selector, ResultStatus.Ok, Monospace: true),
-                new TableCell(ReadTag(d.Record, "k") ?? "rsa", Monospace: true),
+                new TableCell(d.Selector, IsRevokedDkim(d.Record) ? ResultStatus.Warning : ResultStatus.Ok, Monospace: true),
+                IsRevokedDkim(d.Record)
+                    ? new TableCell("revoked (empty p=)", ResultStatus.Warning)
+                    : new TableCell(ReadTag(d.Record, "k") ?? "rsa", Monospace: true),
                 new TableCell(d.Record.Length > 110 ? d.Record[..110] + "…" : d.Record, Monospace: true),
             ]).ToList(),
             "None of the probed selectors resolved. That does not prove DKIM is off — add your selector above.");
@@ -276,28 +338,32 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
             "No MX records. This domain does not receive mail.");
     }
 
-    private static async Task<string?> FirstTxtStartingWithAsync(
+    private static async Task<IReadOnlyList<string>> SpfRecordsAsync(
         ILookupClient client,
-        string name,
-        string prefix,
+        string domain,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            IDnsQueryResponse response = await client
-                .QueryAsync(name, QueryType.TXT, cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-
-            return response.Answers
-                .OfType<TxtRecord>()
-                .Select(r => string.Concat(r.Text))
-                .FirstOrDefault(t => t.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
-        }
-        catch (Exception ex) when (ex is DnsResponseException or System.Net.Sockets.SocketException)
-        {
-            return null;
-        }
+        IReadOnlyList<string> records = await TxtRecordsAsync(client, domain, cancellationToken).ConfigureAwait(false);
+        return records.Where(SpfRecord.IsSpf).ToList();
     }
+
+    private static async Task<IReadOnlyList<string>> DmarcRecordsAsync(
+        ILookupClient client,
+        string domain,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<string> records = await TxtRecordsAsync(client, "_dmarc." + domain, cancellationToken)
+            .ConfigureAwait(false);
+
+        // RFC 7489 section 6.6.3: a record must start with exactly v=DMARC1.
+        return records
+            .Where(r => r.StartsWith("v=DMARC1", StringComparison.OrdinalIgnoreCase)
+                        && (r.Length == 8 || r[8] is ';' or ' '))
+            .ToList();
+    }
+
+    /// <summary>True for a DKIM key record whose p= tag is present but empty, which RFC 6376 defines as revoked.</summary>
+    private static bool IsRevokedDkim(string record) => ReadTag(record, "p")?.Length == 0;
 
     private static async Task<IReadOnlyList<(string, string)>> ProbeDkimAsync(
         ILookupClient client,
@@ -323,12 +389,10 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
                     $"{selector}._domainkey.{domain}",
                     cancellationToken).ConfigureAwait(false);
 
-                // Most keys start v=DKIM1, but some providers publish only k= and p=,
-                // which is still a valid key record.
-                string? key = records.FirstOrDefault(r =>
-                    r.StartsWith("v=DKIM1", StringComparison.OrdinalIgnoreCase)
-                    || r.StartsWith("k=", StringComparison.OrdinalIgnoreCase)
-                    || r.Contains("p=", StringComparison.OrdinalIgnoreCase));
+                // v= is optional, but p= is the one tag every key record must carry. Testing
+                // for the tag rather than the text "p=" keeps a wildcard TXT answer from
+                // passing for a key.
+                string? key = records.FirstOrDefault(r => ReadTag(r, "p") is not null);
 
                 return (selector, key);
             })).ConfigureAwait(false);
@@ -396,42 +460,5 @@ public sealed class MailAuthTool(IOutboundTargetValidator validator) : ITool, IT
         }
 
         return null;
-    }
-
-    /// <summary>
-    /// Count the mechanisms that cost a DNS lookup. RFC 7208 section 4.6.4 caps these
-    /// at ten, and blowing the cap makes SPF fail outright rather than degrade.
-    /// </summary>
-    private static int CountSpfLookups(string spf)
-    {
-        string[] costly = ["include:", "a:", "mx:", "ptr:", "exists:", "redirect="];
-        int count = 0;
-
-        foreach (string term in spf.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-        {
-            string mechanism = term.TrimStart('+', '-', '~', '?');
-
-            if (costly.Any(c => mechanism.StartsWith(c, StringComparison.OrdinalIgnoreCase))
-                || mechanism.Equals("a", StringComparison.OrdinalIgnoreCase)
-                || mechanism.Equals("mx", StringComparison.OrdinalIgnoreCase)
-                || mechanism.Equals("ptr", StringComparison.OrdinalIgnoreCase))
-            {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
-    private static string ReadAllMechanism(string spf)
-    {
-        string lower = spf.ToLowerInvariant();
-
-        if (lower.Contains("-all", StringComparison.Ordinal)) { return "-all (fail)"; }
-        if (lower.Contains("~all", StringComparison.Ordinal)) { return "~all (softfail)"; }
-        if (lower.Contains("?all", StringComparison.Ordinal)) { return "?all (neutral)"; }
-        if (lower.Contains("+all", StringComparison.Ordinal)) { return "+all (pass anything)"; }
-
-        return "none (defaults to neutral)";
     }
 }
