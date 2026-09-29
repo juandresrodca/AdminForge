@@ -28,6 +28,17 @@ public sealed class SecurityTxtValidatorToolTests
             && values.Rows.Any(row => row.Label == "Contact" && row.Value.Contains("mailto:", StringComparison.Ordinal)));
     }
 
+    [Theory]
+    [InlineData("2099-01-01T00:00:00Z", true)]
+    [InlineData("2099-01-01T00:00:00.123+02:00", true)]
+    [InlineData("2099-01-01t00:00:00z", true)]
+    [InlineData("12/31/2099", false)]
+    [InlineData("2099-01-01", false)]
+    [InlineData("2099-01-01 00:00:00Z", false)]
+    [InlineData("Thu, 01 Jan 2099 00:00:00 GMT", false)]
+    public void Expires_must_be_an_rfc_3339_date_time(string value, bool valid) =>
+        Assert.Equal(valid, SecurityTxtValidatorTool.TryParseRfc3339(value, out _));
+
     [Fact]
     public async Task Flags_an_expired_file_as_danger()
     {

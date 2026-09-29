@@ -55,17 +55,28 @@ come up.
 Put AdminForge behind a proxy that terminates TLS. Beyond the usual reasons, there is
 one specific to this application.
 
-`Program.cs` enables `UseForwardedHeaders` with `KnownProxies` and `KnownIPNetworks`
-both cleared, which is the standard configuration for a container whose proxy address
-is not known ahead of time. The consequence is that `X-Forwarded-For` is trusted from
-*any* caller, and the rate limiter partitions on the resulting client address. Behind
-a proxy that sets the header itself, that is exactly right. Exposed directly to a
-network, a caller can send a different `X-Forwarded-For` on every request and never
-meet the rate limit at all.
+The rate limiter partitions on the client address, and behind a proxy that address
+arrives in `X-Forwarded-For`. AdminForge only believes that header when the request
+comes from a **trusted proxy**: loopback always, plus anything listed in
+`AdminForge:TrustedProxies` (IP literals or CIDR ranges). From anyone else the header
+is ignored, so a caller cannot invent a fresh address per request and dodge the
+limit.
+
+If the proxy is not on loopback — typically a proxy container on the same Docker
+network — list that network, or every user will share the proxy's address and one
+rate-limit bucket:
+
+```yaml
+environment:
+  AdminForge__TrustedProxies__0: "172.16.0.0/12"
+```
+
+An entry that is neither an address nor a CIDR range stops the app at startup rather
+than silently trusting nobody.
 
 So: terminate at a proxy, make sure the proxy **sets** `X-Forwarded-For` rather than
-appending to whatever the client sent, and do not publish container port 8080 to
-anything but the proxy.
+appending to whatever the client sent, trust only that proxy, and do not publish
+container port 8080 to anything but the proxy.
 
 ### nginx
 

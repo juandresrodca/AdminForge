@@ -32,7 +32,7 @@ public sealed class OutboundTargetValidator(IOptionsMonitor<AdminForgeOptions> o
             return TargetValidation.Deny(host, "That does not look like a hostname or IP address.");
         }
 
-        if (settings.BlockedHosts.Any(b => string.Equals(b, normalised, StringComparison.OrdinalIgnoreCase)))
+        if (IsBlockedName(normalised, settings.BlockedHosts))
         {
             return TargetValidation.Deny(normalised, $"{normalised} is blocked by this instance's configuration.");
         }
@@ -65,6 +65,13 @@ public sealed class OutboundTargetValidator(IOptionsMonitor<AdminForgeOptions> o
             {
                 return TargetValidation.Deny(normalised, $"{normalised} did not resolve to any address.");
             }
+        }
+
+        // Blocking a host by name alone is bypassed by asking for its address, or for
+        // another name that resolves to it, so the addresses are checked as well.
+        if (addresses.Any(a => IsBlockedAddress(a, settings.BlockedHosts)))
+        {
+            return TargetValidation.Deny(normalised, $"{normalised} is blocked by this instance's configuration.");
         }
 
         if (settings.AllowPrivateTargets)
@@ -108,6 +115,48 @@ public sealed class OutboundTargetValidator(IOptionsMonitor<AdminForgeOptions> o
 
         TargetValidation validation = await ValidateHostAsync(uri.Host, cancellationToken).ConfigureAwait(false);
         return (validation, validation.IsAllowed ? uri : null);
+    }
+
+    /// <summary>
+    /// True when a blocked-hosts entry names this host or a parent domain of it, so
+    /// blocking <c>example.com</c> also blocks <c>www.example.com</c>.
+    /// </summary>
+    /// <param name="host">The normalised host.</param>
+    /// <param name="blocked">The configured entries.</param>
+    internal static bool IsBlockedName(string host, IEnumerable<string> blocked) =>
+        blocked.Select(b => b.Trim().TrimEnd('.')).Any(b =>
+            b.Length > 0
+            && (host.Equals(b, StringComparison.OrdinalIgnoreCase)
+                || host.EndsWith("." + b, StringComparison.OrdinalIgnoreCase)));
+
+    /// <summary>True when an entry is this address, or a CIDR range containing it.</summary>
+    /// <param name="address">A resolved address.</param>
+    /// <param name="blocked">The configured entries.</param>
+    internal static bool IsBlockedAddress(IPAddress address, IEnumerable<string> blocked)
+    {
+        if (address.IsIPv4MappedToIPv6)
+        {
+            address = address.MapToIPv4();
+        }
+
+        foreach (string raw in blocked)
+        {
+            string entry = raw.Trim();
+
+            if (entry.Contains('/', StringComparison.Ordinal))
+            {
+                if (IPNetwork.TryParse(entry, out IPNetwork network) && network.Contains(address))
+                {
+                    return true;
+                }
+            }
+            else if (IPAddress.TryParse(entry, out IPAddress? literal) && literal.Equals(address))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool IsLocalhostName(string host) =>

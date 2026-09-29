@@ -20,6 +20,7 @@ public sealed class CronParserTests
     [InlineData("0 0 1 * *")]
     [InlineData("0 0 1 1 *")]
     [InlineData("0 30 2 * * *")]
+    [InlineData("30\t2  *\t* 1-5")]
     public async Task Parses_valid_expressions(string expression)
     {
         ToolResult result = await ParseAsync(expression);

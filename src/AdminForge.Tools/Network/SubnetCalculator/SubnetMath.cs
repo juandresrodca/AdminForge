@@ -71,7 +71,11 @@ public static class SubnetMath
             suffix = parts.Length > 1 ? parts[1] : null;
         }
 
-        if (!IPAddress.TryParse(addressPart, out IPAddress? address))
+        // IPAddress.TryParse also takes shorthand such as "10" (0.0.0.10) or "10.1"
+        // (10.0.0.1), which turns "10/8" into a network nobody meant. IPv4 must be four
+        // dotted octets.
+        if (!IPAddress.TryParse(addressPart, out IPAddress? address)
+            || (address.AddressFamily == AddressFamily.InterNetwork && !IsDottedQuad(addressPart)))
         {
             error = $"'{addressPart}' is not a valid IP address.";
             return false;
@@ -94,7 +98,8 @@ public static class SubnetMath
         {
             prefix = parsed;
         }
-        else if (!isV6 && IPAddress.TryParse(suffix, out IPAddress? mask) && TryPrefixFromMask(mask, out int fromMask))
+        else if (!isV6 && IsDottedQuad(suffix) && IPAddress.TryParse(suffix, out IPAddress? mask)
+                 && TryPrefixFromMask(mask, out int fromMask))
         {
             prefix = fromMask;
         }
@@ -241,6 +246,15 @@ public static class SubnetMath
                 bytes[index] &= (byte)~bit;
             }
         }
+    }
+
+    /// <summary>Four decimal octets separated by dots, the only IPv4 form people mean.</summary>
+    private static bool IsDottedQuad(string value)
+    {
+        string[] octets = value.Split('.');
+
+        return octets.Length == 4
+            && octets.All(o => o.Length is > 0 and <= 3 && o.All(char.IsAsciiDigit));
     }
 
     private static uint ToUInt32(IPAddress address)

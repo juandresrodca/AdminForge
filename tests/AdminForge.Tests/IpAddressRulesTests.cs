@@ -36,6 +36,11 @@ public sealed class IpAddressRulesTests
     [InlineData("198.51.100.1")]
     [InlineData("203.0.113.1")]
     [InlineData("2001:db8::1")]
+    // IPv6 forms that embed an IPv4 address, and discard-only
+    [InlineData("::7f00:1")]
+    [InlineData("2002:c0a8:101::1")]
+    [InlineData("64:ff9b:1::a00:1")]
+    [InlineData("100::1")]
     // Multicast and reserved
     [InlineData("224.0.0.1")]
     [InlineData("239.255.255.255")]

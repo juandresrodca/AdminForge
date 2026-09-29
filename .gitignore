@@ -50,3 +50,7 @@ desktop.ini
 ## Docker
 .env
 docker-compose.override.yml
+
+# Claude Code local files (kept on each machine, never committed)
+.claude/
+CLAUDE.md

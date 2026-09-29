@@ -124,14 +124,15 @@ public static class ServiceCollectionExtensions
             ? [literal]
             : await Dns.GetHostAddressesAsync(endpoint.Host, cancellationToken).ConfigureAwait(false);
 
-        IPAddress[] permitted = options.AllowPrivateTargets
-            ? addresses
-            : addresses.Where(a => !IpAddressRules.IsPrivateOrReserved(a)).ToArray();
+        IPAddress[] permitted = addresses
+            .Where(a => options.AllowPrivateTargets || !IpAddressRules.IsPrivateOrReserved(a))
+            .Where(a => !OutboundTargetValidator.IsBlockedAddress(a, options.BlockedHosts))
+            .ToArray();
 
         if (permitted.Length == 0)
         {
             throw new HttpRequestException(
-                $"{endpoint.Host} resolves only to private or reserved addresses, which this instance will not contact.");
+                $"{endpoint.Host} resolves only to private, reserved or blocked addresses, which this instance will not contact.");
         }
 
         var socket = new Socket(SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };

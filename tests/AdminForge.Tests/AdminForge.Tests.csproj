@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\AdminForge.Core\AdminForge.Core.csproj" />
     <ProjectReference Include="..\..\src\AdminForge.Tools\AdminForge.Tools.csproj" />
+    <ProjectReference Include="..\..\src\AdminForge.Web\AdminForge.Web.csproj" />
   </ItemGroup>
 
 </Project>
