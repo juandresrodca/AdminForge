@@ -195,9 +195,10 @@ Invalid values for the first three fail at startup rather than at the first requ
 
 Stated here because an overstated guarantee is worse than none.
 
-- **The TLS checker accepts any port from 1 to 65535**, and its failure messages
-  distinguish a refused connection from a timeout. Against public addresses that is a
-  port scanner with a 30-per-minute budget. The rate limiter is the only thing
+- **The TLS checker accepts any port from 1 to 65535.** Its failure message is the
+  same either way, but the *time it takes* is not: a closed port refuses immediately
+  and a filtered one waits out the connect timeout. Against public addresses that is a
+  port-state oracle with a 30-per-minute budget. The rate limiter is the only thing
   bounding it; a public instance that cares should sit behind authentication.
 - **A custom DNS resolver is used by its first resolved address only.** If a name
   given as a resolver resolves to several addresses, checkpoint 1 vets them all and
