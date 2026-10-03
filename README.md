@@ -230,8 +230,11 @@ design. That is handled once, in the core, and every tool inherits it:
 - A strict content security policy with no inline script or style and no third-party
   origins, and a per-client rate limiter on tool execution
 
-Full detail in [ARCHITECTURE.md](ARCHITECTURE.md#security). To report a vulnerability,
-see [SECURITY.md](SECURITY.md).
+The ranges that are refused, which tool takes which path, what `AllowPrivateTargets`
+changes and the limitations that remain are written out in
+[docs/security-model.md](docs/security-model.md); the implementation is in
+[ARCHITECTURE.md](ARCHITECTURE.md#security). To report a vulnerability, see
+[SECURITY.md](SECURITY.md).
 
 ---
 

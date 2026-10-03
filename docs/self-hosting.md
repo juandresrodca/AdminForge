@@ -139,11 +139,12 @@ Turn it on for an instance on your own network that cannot be reached from outsi
 because checking a certificate on an internal host is the whole point of running your
 own. Leave it off everywhere else. The refusals cover DNS rebinding too: a name that
 resolves to a mix of public and private addresses is rejected outright, and every
-redirect hop is re-validated — see [ARCHITECTURE.md](../ARCHITECTURE.md#security).
+redirect hop is re-validated — see [the security model](security-model.md) for the
+exact ranges and the limitations that remain.
 
 ## Running without internet access
 
-Seven of the twelve tools need no egress at all, which makes an air-gapped instance
+Seven of the thirteen tools need no egress at all, which makes an air-gapped instance
 genuinely useful rather than a stub.
 
 | Works offline | Needs outbound access |
@@ -153,6 +154,7 @@ genuinely useful rather than a stub.
 | Windows error code lookup — the dataset ships in the image | TLS certificate checker |
 | Cron expression parser — no network, just a time zone database | HTTP security headers |
 | | SPF, DKIM and DMARC checker |
+| | security.txt validator |
 
 Getting the image onto a disconnected host:
 
@@ -197,6 +199,8 @@ proxy log is either a genuinely busy instance or the forwarded-header problem ab
 ## Related
 
 - [README — Configuration](../README.md#configuration) — every setting and its default
+- [docs/security-model.md](security-model.md) — every range that is refused, which tool
+  takes which path, and what `AllowPrivateTargets` does and does not switch off
 - [ARCHITECTURE.md — Security](../ARCHITECTURE.md#security) — how the target rules and
   the CSP are implemented, in one place, for every tool
 - [SECURITY.md](../SECURITY.md) — reporting a vulnerability
