@@ -8,7 +8,7 @@ Subnets, certificates, DNS, mail records, Windows error codes and the rest of th
 lookups — in one container you run yourself.
 
 **No sign-up, no accounts, no telemetry.** The JWT decoder, password generator, hash
-generator and  encoder never send what you type anywhere; the other eight tools run on
+generator and  encoder never send what you type anywhere; the other nine tools run on
 the AdminForge  instance itself — your own, when you self-host.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/juandresrodca/AdminForge/ci.yml?branch=main&style=flat-square&label=CI&labelColor=0a0e16&color=9fef00)](https://github.com/juandresrodca/AdminForge/actions/workflows/ci.yml)
@@ -97,7 +97,9 @@ AdminForge is the same idea pointed at **infrastructure work**:
 
 ## What is in it
 
-Twelve tools today, across six categories.
+Thirteen tools today, across six categories. Each one has a reference section —
+inputs, limits, and whether it makes an outbound request — in the
+**[tool reference](docs/tools/README.md)**.
 
 ### Network
 
@@ -116,6 +118,7 @@ Twelve tools today, across six categories.
 | **JWT decoder** | Browser | Header, claims and expiry, interpreted — and the token never leaves your machine |
 | **Password generator** | Browser | Passwords and passphrases from `crypto.getRandomValues`, with the real entropy |
 | **Hash generator** | Browser | MD5, SHA-1, SHA-256, SHA-384, SHA-512, and checksum verification |
+| **security.txt validator** | Server | Whether a domain publishes an RFC 9116 disclosure contact, and whether it is still in date |
 
 ### Windows
 
@@ -218,8 +221,8 @@ in front of it.
 ## Security
 
 AdminForge holds no accounts and no data, so the interesting surface is narrow — but
-half of its tools fetch a target you supply, which is server-side request forgery by
-design. That is handled once, in the core, and every tool inherits it:
+six of its thirteen tools fetch a target you supply, which is server-side request
+forgery by design. That is handled once, in the core, and every tool inherits it:
 
 - Private, loopback, link-local (including cloud metadata at `169.254.169.254`),
   carrier-grade NAT and unique-local addresses are refused unless the operator opts in
