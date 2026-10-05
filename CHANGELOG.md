@@ -9,6 +9,15 @@ Container images are published to
 [`ghcr.io/juandresrodca/adminforge`](https://github.com/juandresrodca/AdminForge/pkgs/container/adminforge);
 `latest` tracks `main`.
 
+`0.1.0` predates the release pipeline. It is described below and it is a real cut of the
+code — commit [`047a2de`](https://github.com/juandresrodca/AdminForge/commit/047a2de),
+the last commit of 1 September 2026 — but it carries no git tag and no GitHub release,
+so there is no `v0.1.0` to compare against and no `0.1.0` image on GHCR either: the
+semver image tags are cut from a `v*` tag push, and `main` and `latest` are the only tags
+that exist today. The links at the foot of this file therefore point at commits rather
+than tags. Tagging starts with the next version; the first tag push also produces the
+first version-pinned image.
+
 ## [Unreleased]
 
 ### Added
@@ -30,6 +39,8 @@ Container images are published to
   header is now believed only from loopback and from the new `AdminForge:TrustedProxies`
   setting (IPs or CIDR ranges). A proxy that is not on loopback — e.g. a proxy container
   on the same Docker network — must be listed there, or every user shares one bucket.
+  An entry that is neither an address nor a CIDR range stops the app at startup, because
+  silently trusting nobody throttles every user of the instance as one client. ([#39])
 - `BlockedHosts` also blocks subdomains of a blocked name, and entries may be IP
   addresses or CIDR ranges checked against every resolved address, including at connect time.
 - IPv4-compatible (`::/96`), 6to4 (`2002::/16`) and discard-only (`100::/64`) IPv6
@@ -111,8 +122,8 @@ no database, no accounts and no configuration file.
   instance to the internet with `AllowPrivateTargets` enabled turns it into an internal
   network scanner — the default is off, and `docker-compose.yml` documents why.
 
-[Unreleased]: https://github.com/juandresrodca/AdminForge/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/juandresrodca/AdminForge/releases/tag/v0.1.0
+[Unreleased]: https://github.com/juandresrodca/AdminForge/compare/047a2de...HEAD
+[0.1.0]: https://github.com/juandresrodca/AdminForge/commit/047a2de
 
 [#6]: https://github.com/juandresrodca/AdminForge/issues/6
 [#11]: https://github.com/juandresrodca/AdminForge/issues/11
@@ -139,3 +150,4 @@ no database, no accounts and no configuration file.
 [#32]: https://github.com/juandresrodca/AdminForge/issues/32
 [#33]: https://github.com/juandresrodca/AdminForge/issues/33
 [#34]: https://github.com/juandresrodca/AdminForge/issues/34
+[#39]: https://github.com/juandresrodca/AdminForge/issues/39
