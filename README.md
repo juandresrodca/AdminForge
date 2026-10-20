@@ -180,6 +180,8 @@ rendered by the core, and your tool looks exactly like every other one.
 **→ [CONTRIBUTING.md](CONTRIBUTING.md)** has the full walkthrough.
 **→ [ARCHITECTURE.md](ARCHITECTURE.md)** explains how the registry, the form generator
 and the SSRF guard fit together.
+**→ [SUPPORT.md](SUPPORT.md)** is where to take a question instead — getting it running,
+a tool answering wrongly, or something that should not be public.
 
 ### Good first issues
 
