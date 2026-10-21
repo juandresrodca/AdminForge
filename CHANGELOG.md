@@ -71,8 +71,7 @@ Tools accepted into the roadmap and open for contribution. Grouped the same way 
   Wake-on-LAN packet builder ([#15]), URL redirect chain tracer ([#16]).
 - **Certificates and crypto** — X.509 certificate decoder ([#17]), CSR decoder ([#18]),
   hash identifier ([#19]), HMAC generator and verifier ([#20]), bcrypt generator and
-  verifier ([#21]), pwned-password check over HIBP k-anonymity ([#22]),
-  security.txt validator ([#23]).
+  verifier ([#21]), pwned-password check over HIBP k-anonymity ([#22]).
 - **Windows and Active Directory** — security event ID lookup ([#24]), PowerShell
   `-EncodedCommand` decoder ([#25]), `userAccountControl` decoder ([#26]),
   well-known SID resolver ([#27]), LDAP filter builder and validator ([#28]).
@@ -138,7 +137,6 @@ no database, no accounts and no configuration file.
 [#20]: https://github.com/juandresrodca/AdminForge/issues/20
 [#21]: https://github.com/juandresrodca/AdminForge/issues/21
 [#22]: https://github.com/juandresrodca/AdminForge/issues/22
-[#23]: https://github.com/juandresrodca/AdminForge/issues/23
 [#24]: https://github.com/juandresrodca/AdminForge/issues/24
 [#25]: https://github.com/juandresrodca/AdminForge/issues/25
 [#26]: https://github.com/juandresrodca/AdminForge/issues/26

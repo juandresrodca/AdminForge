@@ -1,6 +1,6 @@
 # Roadmap
 
-Twenty-five tools are specified, labelled and open for contribution. Every one of them
+Twenty-four tools are specified, labelled and open for contribution. Every one of them
 has a tracking issue with acceptance criteria already written, so there is nothing to
 design before you start — pick a row, comment on the issue, and it is yours.
 
@@ -60,7 +60,7 @@ core rather than implementing its own checks.
 
 ## Certificates and crypto
 
-Seven tools. Several of these handle material a user would not want leaving their
+Six tools. Several of these handle material a user would not want leaving their
 machine, so the browser-side versus server-side decision matters more here than
 anywhere else in the toolbox — read the `In browser` / `Server side` labelling rules in
 [`ARCHITECTURE.md`](../ARCHITECTURE.md) before choosing.
@@ -73,7 +73,6 @@ anywhere else in the toolbox — read the `In browser` / `Server side` labelling
 | [#20](https://github.com/juandresrodca/AdminForge/issues/20) | HMAC generator and verifier | Computes an HMAC over a message with a key, and verifies a supplied one. | medium |
 | [#21](https://github.com/juandresrodca/AdminForge/issues/21) | bcrypt generator and verifier | Generates a bcrypt hash, and checks a password against an existing one. | large |
 | [#22](https://github.com/juandresrodca/AdminForge/issues/22) | Pwned password checker | Checks a password against the HIBP corpus using k-anonymity, so the password never leaves the machine. | large |
-| [#23](https://github.com/juandresrodca/AdminForge/issues/23) | security.txt validator | Fetches `/.well-known/security.txt` and checks it against RFC 9116. | small |
 
 ## Windows and Active Directory
 

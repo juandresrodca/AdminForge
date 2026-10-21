@@ -185,10 +185,10 @@ a tool answering wrongly, or something that should not be public.
 
 ### Good first issues
 
-Twenty-five tools are specified and waiting, each with acceptance criteria already
+Twenty-four tools are specified and waiting, each with acceptance criteria already
 written. Comment on one and it is yours.
 
-**[→ The roadmap](docs/ROADMAP.md)** — all twenty-five grouped by category, with an
+**[→ The roadmap](docs/ROADMAP.md)** — all twenty-four grouped by category, with an
 effort estimate on each and a shortlist of the five shortest paths from `git clone` to
 a merged pull request.
 
