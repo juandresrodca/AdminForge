@@ -97,7 +97,7 @@ AdminForge is the same idea pointed at **infrastructure work**:
 
 ## What is in it
 
-Thirteen tools today, across six categories. Each one has a reference section (inputs,
+Fourteen tools today, across six categories. Each one has a reference section (inputs,
 limits, and whether it makes an outbound request) in the
 **[tool reference](docs/tools/README.md)**.
 
@@ -138,6 +138,7 @@ limits, and whether it makes an outbound request) in the
 |---|---|---|
 | **Encoder and decoder** | Browser | Base64, base64url, percent-encoding, hex and HTML entities, UTF-8 correct |
 | **Cron expression parser** | Server | Field-by-field explanation and the next runs in the time zone you pick |
+| **Uptime and SLA calculator** | Server | Converts an availability target into the downtime it allows, and downtime back into availability, against the common nines |
 
 <div align="center">
 <img src="docs/img/tls-checker.png" alt="The TLS certificate checker showing a certificate's expiry, chain and negotiated protocol" width="49%">
@@ -185,10 +186,10 @@ a tool answering wrongly, or something that should not be public.
 
 ### Good first issues
 
-Twenty-four tools are specified and waiting, each with acceptance criteria already
+Twenty-three tools are specified and waiting, each with acceptance criteria already
 written. Comment on one and it is yours.
 
-**[→ The roadmap](docs/ROADMAP.md)**: all twenty-four grouped by category, with an
+**[→ The roadmap](docs/ROADMAP.md)**: all twenty-three grouped by category, with an
 effort estimate on each and a shortlist of the five shortest paths from `git clone` to
 a merged pull request.
 

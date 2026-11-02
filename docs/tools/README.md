@@ -24,6 +24,7 @@ container is <http://localhost:8080/tools/subnet-calculator>.
 | [Encoder and decoder](#encoder-and-decoder) | `text-encoder` | Browser | No |
 | [Subnet calculator](#subnet-calculator) | `subnet-calculator` | Server | No — pure arithmetic |
 | [Cron expression parser](#cron-expression-parser) | `cron-parser` | Server | No — pure arithmetic |
+| [Uptime and SLA calculator](#uptime-and-sla-calculator) | `uptime-and-sla-percentage-calculator` | Server | No (pure arithmetic) |
 | [Windows error code lookup](#windows-error-code-lookup) | `windows-error-code` | Server | No — embedded dataset |
 | [DNS lookup](#dns-lookup) | `dns-lookup` | Server | **Yes** — DNS, to your resolver or one you pick |
 | [TLS certificate checker](#tls-certificate-checker) | `tls-certificate-checker` | Server | **Yes** — a TLS handshake to the host and port |
@@ -33,13 +34,13 @@ container is <http://localhost:8080/tools/subnet-calculator>.
 | [RDAP and WHOIS lookup](#rdap-and-whois-lookup) | `rdap-lookup` | Server | **Yes** — HTTPS to `rdap.org` and the registry it redirects to |
 
 Read that last column as the blast radius. Four tools never post your input anywhere,
-so a production token or a password is safe in them. Three more reach the server but
+so a production token or a password is safe in them. Four more reach the server but
 never the network, so the input stays on your instance. The remaining six aim a request
 at a target you supply, which is server-side request forgery as a feature: they are the
 reason the `AllowPrivateTargets` setting exists and the reason
 [docs/security-model.md](../security-model.md) is as long as it is.
 
-**Rate limiting applies to the nine server-side tools only** — the browser tools never
+**Rate limiting applies to the ten server-side tools only** — the browser tools never
 reach the server, so there is nothing to limit. The default is 30 runs per client per
 60 seconds (`RateLimit__PermitLimit`, `RateLimit__WindowSeconds`), and a single run is
 capped at 15 seconds (`ToolTimeoutSeconds`) and 2 MiB of fetched response
@@ -270,6 +271,31 @@ credentials. Runs in the browser.
 **Limits.** Occurrences are computed in the time zone you pick, so a daylight-saving
 transition shows up in the list as a skipped or repeated run — exactly the surprise that
 breaks nightly jobs twice a year. Pure arithmetic: nothing leaves the instance.
+
+### Uptime and SLA calculator
+
+**Answers:** how much downtime does this availability target actually allow, and how
+much of that budget is left.
+
+| Field | Accepts |
+|---|---|
+| Availability target (%) | A percentage from 0 to 100, up to 20 characters. `99.95` or `99.95%` both work. Leave it empty to work backwards from an allowed downtime instead. |
+| Window | Day, week, month, quarter or year. Default month. |
+| Allowed downtime | A duration in the unit below, from 0 up to the length of one window. Use it instead of a percentage to find the availability it implies. |
+| Downtime unit | Seconds, minutes, hours or days. Default minutes. Applies to both downtime fields. |
+| Actual downtime | Optional. Downtime already incurred in this window, checked against the budget. |
+
+A target or an allowed downtime is required, and giving both is refused rather than
+resolved in favour of one.
+
+**Limits.** Pure arithmetic, so nothing you type leaves the instance. Months and
+quarters are averages of a 365.25-day year: a month is 30.4375 days and a quarter
+91.3125, which is what makes twelve months come to exactly one year rather than to
+360 days. Durations are rounded down to the second, and to a tenth of a second under a
+minute, so a downtime budget is never overstated. Thousands separators are refused, so
+`1,5` is rejected instead of being read as fifteen. The output carries the allowed
+downtime rescaled to all five windows and a reference table of the six common tiers from
+99% to 99.999%.
 
 ---
 

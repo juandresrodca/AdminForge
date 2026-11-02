@@ -27,6 +27,14 @@ first version-pinned image.
   path through the single controller including the progressive-enhancement branch, and
   the three outbound-target checkpoints and the window each one closes. GitHub renders
   them inline; the existing ASCII diagrams are untouched.
+- **Uptime and SLA calculator** (`/tools/uptime-and-sla-percentage-calculator`): turns
+  an availability target into the downtime it allows per day, week, month, quarter and
+  year, or reads an allowed downtime back as the availability it implies. An optional
+  actual-downtime figure reports the budget left or the overspend, and a reference table
+  gives the six common tiers from 99% to 99.999%. Months and quarters are averages of a
+  365.25-day year, so twelve months make exactly one year, and durations are rounded down
+  to the second so a budget is never overstated. Server side, pure arithmetic, no
+  outbound request. ([#31], [#47])
 - [`docs/self-hosting.md`](docs/self-hosting.md): the deployment half of the README —
   reverse proxy and TLS, why a proxy is not optional given that `UseForwardedHeaders`
   trusts `X-Forwarded-For` from any caller and the rate limiter partitions on the
@@ -76,8 +84,8 @@ Tools accepted into the roadmap and open for contribution. Grouped the same way 
   `-EncodedCommand` decoder ([#25]), `userAccountControl` decoder ([#26]),
   well-known SID resolver ([#27]), LDAP filter builder and validator ([#28]).
 - **Mail** — email header analyser ([#29]), DMARC record builder ([#30]).
-- **Calculators** — uptime and SLA percentage ([#31]), RAID capacity ([#32]),
-  storage and data-rate units ([#33]), chmod and Unix permissions ([#34]).
+- **Calculators** — RAID capacity ([#32]), storage and data-rate units ([#33]),
+  chmod and Unix permissions ([#34]).
 
 New tools are added through the scaffold described in
 [`CONTRIBUTING.md`](CONTRIBUTING.md); a tool is one folder under
@@ -149,3 +157,4 @@ no database, no accounts and no configuration file.
 [#33]: https://github.com/juandresrodca/AdminForge/issues/33
 [#34]: https://github.com/juandresrodca/AdminForge/issues/34
 [#39]: https://github.com/juandresrodca/AdminForge/issues/39
+[#47]: https://github.com/juandresrodca/AdminForge/pull/47
