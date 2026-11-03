@@ -17,6 +17,7 @@ the AdminForge instance itself, which is your own when you self-host.
 [![Container](https://img.shields.io/badge/ghcr.io-adminforge-9fef00?style=flat-square&labelColor=0a0e16&logo=docker&logoColor=9fef00)](https://github.com/juandresrodca/AdminForge/pkgs/container/adminforge)
 [![Good first issues](https://img.shields.io/github/issues/juandresrodca/AdminForge/good%20first%20issue?style=flat-square&label=good%20first%20issues&labelColor=0a0e16&color=9fef00)](https://github.com/juandresrodca/AdminForge/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 [![Hacktoberfest](https://img.shields.io/badge/hacktoberfest-welcome-9fef00?style=flat-square&labelColor=0a0e16)](https://github.com/juandresrodca/AdminForge/issues?q=is%3Aissue+is%3Aopen+label%3Ahacktoberfest)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-9fef00?style=flat-square&labelColor=0a0e16)](#contributors)
 
 ![The AdminForge tool gallery](docs/img/gallery.png)
 
@@ -255,13 +256,35 @@ changes and the limitations that remain are written out in
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/lolcubaba31"><img src="https://avatars.githubusercontent.com/u/210286718?v=4?s=90" width="90px;" alt="lolcubaba31"/><br /><sub><b>lolcubaba31</b></sub></a><br /><a href="https://github.com/juandresrodca/AdminForge/commits?author=lolcubaba31" title="Code">&#128187;</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/yeab-tatek"><img src="https://avatars.githubusercontent.com/u/193041579?v=4?s=90" width="90px;" alt="yeab-tatek"/><br /><sub><b>yeab-tatek</b></sub></a><br /><a href="https://github.com/juandresrodca/AdminForge/commits?author=yeab-tatek" title="Code">&#128187;</a></td>
+    </tr>
+  </tbody>
+</table>
+
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+Two of the fourteen tools came from outside this repository.
+[lolcubaba31](https://github.com/lolcubaba31) wrote the security.txt validator in
+[`63c0733`](https://github.com/juandresrodca/AdminForge/commit/63c0733) on 15 September 2026,
+closing [#37](https://github.com/juandresrodca/AdminForge/issues/37).
+[yeab-tatek](https://github.com/yeab-tatek) wrote the uptime and SLA calculator in
+[#47](https://github.com/juandresrodca/AdminForge/pull/47), merged on 31 October 2026.
+Both arrived through the good first issues the badge row links to.
+
 Every contributor gets credited here, whatever the contribution:
 [all-contributors](https://allcontributors.org) counts documentation, bug reports,
 design and ideas alongside code.
+
+> The table above was written by hand. `.all-contributorsrc` still holds
+> `"contributors": []`, so running the all-contributors CLI regenerates this block from the
+> rc file and removes both entries. Add them to the rc file first, or run
+> `npx all-contributors-cli add <login> code` twice and let it write the table itself.
 
 ## Changelog
 
