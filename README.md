@@ -225,7 +225,7 @@ in front of it.
 ## Security
 
 AdminForge holds no accounts and no data, so the interesting surface is narrow, but
-six of its thirteen tools fetch a target you supply, which is server-side request
+six of its fourteen tools fetch a target you supply, which is server-side request
 forgery by design. That is handled once, in the core, and every tool inherits it:
 
 - Private, loopback, link-local (including cloud metadata at `169.254.169.254`),

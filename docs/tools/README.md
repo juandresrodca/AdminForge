@@ -301,13 +301,39 @@ downtime rescaled to all five windows and a reference table of the six common ti
 
 ## Adding a tool
 
-A new tool appears here the same way it appears in the gallery: by existing. The
-registry discovers it, the form is generated from its `[ToolField]` attributes, and the
-`Notes` property it declares is where the honest caveat in its section above comes from.
-See [CONTRIBUTING.md](../../CONTRIBUTING.md) for the fifteen-minute walkthrough and
-[ARCHITECTURE.md](../../ARCHITECTURE.md) for why it needs no registration.
+Two things happen when a tool ships, and only one of them is automatic.
+
+**The application needs no registration.** The registry discovers the tool at startup
+from `typeof(ToolsAssembly).Assembly` (`src/AdminForge.Web/Program.cs:25`), so the
+gallery card, the route at `/tools/<id>` and the form generated from its `[ToolField]`
+attributes all arrive by existing. See
+[ARCHITECTURE.md](../../ARCHITECTURE.md) for how that works and
+[CONTRIBUTING.md](../../CONTRIBUTING.md) for the fifteen-minute walkthrough.
+
+**The documentation does not.** This page is hand-written markdown, the caveat in each
+section above is the tool's `Notes` property copied here by a person, and three other
+documents describe the tool set as well. Each one says something untrue about the
+repository until the pull request that adds the tool changes it:
+
+| File | What a new tool has to change in it |
+|---|---|
+| [`README.md`](../../README.md) | A row in the category table, the tool count in *What is in it*, and the outbound count in *Security* |
+| This page | A row in [Where each tool runs](#where-each-tool-runs), a section under the tool's category, and the four counts in the paragraph after that table |
+| [`CHANGELOG.md`](../../CHANGELOG.md) | An `Added` entry under `[Unreleased]`, and the tool taken out of `Planned` |
+| [`ROADMAP.md`](../ROADMAP.md) | The specification row deleted, its category count, and the total in the lede |
+
+The *Adding a tool?* section of
+[`PULL_REQUEST_TEMPLATE.md`](../../.github/PULL_REQUEST_TEMPLATE.md) carries that table
+as a checklist, so the diff and the review both ask for it.
+[`ROADMAP.md`](../ROADMAP.md) describes the same move from the roadmap's side, under
+*When a tool ships*.
+
+The list comes from what [#47](https://github.com/juandresrodca/AdminForge/pull/47)
+cost. It shipped the uptime and SLA calculator, changed four files, all four of them
+code, and left the repository asserting six untrue things about itself for two days.
+[#52](https://github.com/juandresrodca/AdminForge/issues/52) has the detail and the
+decisions still open.
 
 If you add a tool that fetches a target, take `IOutboundTargetValidator` or
-`SafeHttpFetcher` as a constructor dependency rather than an `HttpClient`, and add a row
-to the table at the top of this page. A tool that bypasses the guard is a vulnerability,
-not a feature.
+`SafeHttpFetcher` as a constructor dependency rather than an `HttpClient`. A tool that
+bypasses the guard is a vulnerability, not a feature.

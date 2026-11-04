@@ -14,7 +14,7 @@ you exactly what to change.
 
 <!-- Delete this whole section if you are not adding one. -->
 
-- [ ] The tool lives in its own folder under `src/AdminForge.Tools/<Category>/`, and no file outside that folder and its test changed
+- [ ] The tool lives in its own folder under `src/AdminForge.Tools/<Category>/`, and nothing else under `src/` or `tests/` changed
 - [ ] `Id` is kebab-case and matches the folder name
 - [ ] `Description` is one sentence, sentence case, under 110 characters, no trailing period
 - [ ] At least three lowercase `Keywords`, including the abbreviations people actually type
@@ -23,6 +23,20 @@ you exactly what to change.
 - [ ] Every `[ToolField]` has a `Label`, and every text field has a `MaxLength`
 - [ ] Expected failures return `ToolResult.Fail` with a message written for an admin, not a stack trace
 - [ ] There is a test covering both a normal input and a bad one
+
+### Documentation
+
+<!--
+The application discovers a new tool at startup, so the gallery, the route and the
+generated form need no registration. The four files below are hand-written and each
+one says something untrue about the repository until this pull request changes it.
+docs/tools/README.md, under "Adding a tool", has the reasoning and the detail.
+-->
+
+- [ ] `README.md`: a row in the category table, the tool count in *What is in it*, and the outbound count in *Security* if the tool fetches a target
+- [ ] `docs/tools/README.md`: a row in *Where each tool runs*, a section under the tool's category, and the counts in the paragraph after that table
+- [ ] `CHANGELOG.md`: an `Added` entry under `[Unreleased]`, and the tool taken out of `Planned`
+- [ ] `docs/ROADMAP.md`: the specification row deleted, its category count, and the total in the lede
 
 ## Checks
 
