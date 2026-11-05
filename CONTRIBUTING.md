@@ -154,7 +154,26 @@ dotnet run --project src/AdminForge.Web
 Open your tool, run it, and check the result reads well. This is the step people skip
 and reviewers notice.
 
-### 7. Open the pull request
+### 7. Write the documentation
+
+The gallery card, the route and the generated form arrive on their own. The prose does
+not. Four hand-written documents describe the tool set, and each one says something
+untrue about the repository until your pull request changes it, in the order you would
+work through them:
+
+1. `README.md`, the category table and the counts it quotes.
+2. `docs/tools/README.md`, the *Where each tool runs* row, a section under your tool's
+   category, and the counts below that table.
+3. `CHANGELOG.md`, an `Added` entry under `[Unreleased]`, and the tool taken out of
+   `Planned`.
+4. `docs/ROADMAP.md`, the specification row and the counts that depend on it.
+
+[*Adding a tool*](docs/tools/README.md#adding-a-tool) in the tool reference holds the
+table that says precisely what each file needs, and the pull request template carries
+the same four as a checklist. Work from that table rather than from this list: it is
+the copy that is kept current.
+
+### 8. Open the pull request
 
 The template has a checklist matching what CI enforces. Green CI means the mechanical
 review is already done, so the conversation can be about the logic.
