@@ -243,6 +243,11 @@ changes and the limitations that remain are written out in
 [ARCHITECTURE.md](ARCHITECTURE.md#security). To report a vulnerability, see
 [SECURITY.md](SECURITY.md).
 
+Decisions that are easy to undo by accident are written down rather than remembered:
+[docs/discoverability.md](docs/discoverability.md) records where AdminForge is listed,
+which lists it has been submitted to and why it has not been sent anywhere else yet,
+and checks the repository against each list's entry rules before anything is sent.
+
 ---
 
 ## Built with
