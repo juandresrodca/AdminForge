@@ -124,5 +124,9 @@ tags:
 
 - Re-read a list's rules before submitting. Both change, and every check above is dated.
 - Both lists look hard at privacy claims. The README's opening lines were tightened on
-  13 September 2026 so that each one survives checking: eight of the twelve tools run on
-  the server, so "nothing leaves the browser" is not a claim AdminForge makes.
+  13 September 2026 so that each one survives checking: most of the tools run on the
+  server, so "nothing leaves the browser" is not a claim AdminForge makes. Counted from
+  the *Where each tool runs* table in [docs/tools/README.md](tools/README.md) on
+  8 November 2026, ten of the fourteen run on the server and four in the browser. Take
+  the figures from that table rather than from this page or the README, because the table
+  is the row a new tool has to add.
