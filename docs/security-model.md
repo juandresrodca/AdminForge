@@ -1,6 +1,6 @@
 # The outbound request security model
 
-Six of AdminForge's thirteen tools take a hostname, an IP literal or a URL from
+Six of AdminForge's fourteen tools take a hostname, an IP literal or a URL from
 whoever is using the page and make a network request to it. That is server-side
 request forgery as a feature: the whole value of the TLS checker is that it connects
 to the host you typed. The question is therefore not whether AdminForge makes
