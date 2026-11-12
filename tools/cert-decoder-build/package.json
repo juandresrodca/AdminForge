@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "asn1js": "^4.0.0",
+    "pkijs": "^3.2.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
