@@ -9,6 +9,13 @@ using Microsoft.Extensions.Options;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+// Container platforms that assign the port (Vercel, Render, Railway, Heroku-style hosts)
+// pass it in PORT. Honouring it means the stock image runs on them unmodified.
+if (HostingPort.TryGetUrl(Environment.GetEnvironmentVariable("PORT"), out string? portUrl))
+{
+    builder.WebHost.UseUrls(portUrl);
+}
+
 IMvcBuilder mvc = builder.Services.AddControllersWithViews();
 
 if (builder.Environment.IsDevelopment())

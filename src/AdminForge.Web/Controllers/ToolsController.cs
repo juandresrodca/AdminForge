@@ -47,10 +47,10 @@ public sealed class ToolsController(
         // A canonical id keeps one URL per tool rather than one per casing.
         if (!string.Equals(tool.Id, id, StringComparison.Ordinal))
         {
-            return RedirectPermanent(tool.Url);
+            return RedirectPermanent(tool.Url + Request.QueryString);
         }
 
-        return View(new ToolPageViewModel(tool));
+        return View(new ToolPageViewModel(tool, Submitted: binder.Prefill(tool, Request.Query)));
     }
 
     /// <summary>Runs a server-side tool against the posted form.</summary>

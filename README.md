@@ -20,7 +20,7 @@ AdminForge instance itself, which is your own when you self-host.
 [![Hacktoberfest](https://img.shields.io/badge/hacktoberfest-welcome-9fef00?style=flat-square&labelColor=0a0e16)](https://github.com/juandresrodca/AdminForge/issues?q=is%3Aissue+is%3Aopen+label%3Ahacktoberfest)
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-9fef00?style=flat-square&labelColor=0a0e16)](#contributors)
 
-![The AdminForge tool gallery](docs/img/gallery.png)
+![Searching the gallery, splitting a /22 in the subnet calculator, copying a link to the result and decoding a Windows error code](docs/img/demo.gif)
 
 </div>
 
@@ -94,6 +94,10 @@ AdminForge is the same idea pointed at **infrastructure work**:
   DNS resolver, or, for registration lookups, rdap.org and the registry it redirects
   to. The app itself works air-gapped.
 - **Tilted at sysadmins and security**, not at front-end work. That is the whole point.
+- **A lookup is a link.** Every server-side tool has a *Copy link* button, so
+  `/tools/dns-lookup?Domain=example.com&RecordType=MX` goes in a ticket or a runbook and
+  opens with the form filled in. The link never runs anything by itself, and the
+  browser-side tools and password fields are never put in a URL.
 
 ---
 
@@ -142,9 +146,13 @@ limits, and whether it makes an outbound request) in the
 | **Cron expression parser** | Server | Field-by-field explanation and the next runs in the time zone you pick |
 | **Uptime and SLA calculator** | Server | Converts an availability target into the downtime it allows, and downtime back into availability, against the common nines |
 
+![The tool gallery, grouped by category](docs/img/gallery.png)
+
 <div align="center">
 <img src="docs/img/tls-checker.png" alt="The TLS certificate checker showing a certificate's expiry, chain and negotiated protocol" width="49%">
 <img src="docs/img/windows-error-code.png" alt="The Windows error code lookup decomposing an HRESULT" width="49%">
+<img src="docs/img/cron-parser.png" alt="The cron expression parser explaining each field and listing the next runs in Europe/Dublin" width="49%">
+<img src="docs/img/jwt-decoder.png" alt="The JWT decoder showing a token's header and claims, decoded in the browser" width="49%">
 </div>
 
 ---
@@ -215,6 +223,10 @@ Set through `appsettings.json` or `AdminForge__*` environment variables.
 | `InstanceBanner` | none | Notice shown on every page, e.g. to mark a public demo. |
 | `RateLimit__PermitLimit` | `30` | Tool runs allowed per client, per window. |
 | `RateLimit__WindowSeconds` | `60` | Length of that window. |
+
+The container listens on 8080. A platform that assigns the port through a `PORT`
+environment variable (Vercel, Render, Railway and similar) is honoured without any
+change to the image.
 
 Invalid values fail at startup rather than at the first request.
 [docs/self-hosting.md](docs/self-hosting.md) covers which of these actually matter for

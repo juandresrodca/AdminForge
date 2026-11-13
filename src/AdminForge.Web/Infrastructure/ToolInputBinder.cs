@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Reflection;
 using AdminForge.Core.Forms;
 using AdminForge.Core.Registry;
+using AdminForge.Core.Tools;
+using Microsoft.Extensions.Primitives;
 
 namespace AdminForge.Web.Infrastructure;
 
@@ -104,6 +106,62 @@ public sealed class ToolInputBinder
         }
 
         return new ToolInputBinding(model, errors, submitted);
+    }
+
+    /// <summary>
+    /// Read form values out of a link's query string, so a lookup can be shared or
+    /// bookmarked as <c>/tools/dns-lookup?Domain=example.com</c>.
+    /// <para>
+    /// The values only fill the form in. Nothing runs until the person presses Run,
+    /// because a link that made the server contact a target just by being opened would
+    /// let any page on the internet aim this instance at one. Browser-side tools and
+    /// password fields are never filled: a query string ends up in logs, history and
+    /// referrers, which is exactly where their input must not go.
+    /// </para>
+    /// </summary>
+    /// <param name="tool">The tool whose page is being rendered.</param>
+    /// <param name="query">The request's query string.</param>
+    /// <returns>Field name to value, for the fields the link supplied validly.</returns>
+    public IReadOnlyDictionary<string, string> Prefill(ToolDescriptor tool, IQueryCollection query)
+    {
+        ArgumentNullException.ThrowIfNull(tool);
+        ArgumentNullException.ThrowIfNull(query);
+
+        var values = new Dictionary<string, string>(StringComparer.Ordinal);
+
+        if (tool.Compute != ComputeMode.ServerSide)
+        {
+            return values;
+        }
+
+        foreach (ToolFieldDescriptor field in tool.Form.Fields)
+        {
+            if (field.Kind == FieldKind.Password || !query.TryGetValue(field.Name, out StringValues supplied))
+            {
+                continue;
+            }
+
+            string raw = supplied.ToString().Trim();
+
+            if (field.Kind == FieldKind.Checkbox)
+            {
+                values[field.Name] = raw.Equals("true", StringComparison.OrdinalIgnoreCase) ? "true" : "false";
+                continue;
+            }
+
+            // A value the form itself would refuse is dropped rather than shown, so a
+            // crafted link cannot put text in a field that the field could never hold.
+            bool tooLong = field.MaxLength > 0 && raw.Length > field.MaxLength;
+            bool notAnOption = field.Kind == FieldKind.Select
+                && !field.Options.Any(o => string.Equals(o.Value, raw, StringComparison.OrdinalIgnoreCase));
+
+            if (raw.Length > 0 && !tooLong && !notAnOption)
+            {
+                values[field.Name] = raw;
+            }
+        }
+
+        return values;
     }
 
     private static string ReadRaw(IFormCollection form, ToolFieldDescriptor field)

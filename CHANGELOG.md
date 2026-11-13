@@ -22,6 +22,17 @@ first version-pinned image.
 
 ### Added
 
+- **Share a lookup by link.** Every server-side tool has a *Copy link* button that
+  copies `/tools/<id>?Field=value` for the form as it stands, and opening such a link
+  fills the form in. It never runs the tool: a link that made the server contact a
+  target just by being opened would let any web page aim an instance at one. Values the
+  form would refuse are dropped, and browser-side tools and password fields are never
+  read from or written to a URL, because a query string ends up in logs and history.
+- The app honours a `PORT` environment variable, so the stock image runs unmodified on
+  container platforms that assign the listening port (Vercel, Render, Railway).
+- README: an animated walkthrough as the hero image, a refreshed gallery screenshot
+  showing all fourteen tools, and screenshots of the cron parser and the JWT decoder.
+
 - [`ARCHITECTURE.md`](ARCHITECTURE.md): three Mermaid diagrams for the parts that were
   prose only — the startup discovery pipeline and its fail-the-build gate, the request
   path through the single controller including the progressive-enhancement branch, and
