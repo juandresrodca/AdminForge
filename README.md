@@ -2,14 +2,15 @@
 
 # AdminForge
 
-**A self-hosted toolbox of browser-based utilities for sysadmins, IT and security engineers.**
+**A self-hosted toolbox of sysadmin, IT and security lookups. The work happens on the
+instance you run, and four of the tools never leave the page at all.**
 
 Subnets, certificates, DNS, mail records, Windows error codes and the rest of the daily
 lookups, in one container you run yourself.
 
 **No sign-up, no accounts, no telemetry.** The JWT decoder, password generator, hash
-generator and encoder never send what you type anywhere; the other nine tools run on
-the AdminForge instance itself, which is your own when you self-host.
+generator and encoder never send what you type anywhere; the rest run on the
+AdminForge instance itself, which is your own when you self-host.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/juandresrodca/AdminForge/ci.yml?branch=main&style=flat-square&label=CI&labelColor=0a0e16&color=9fef00)](https://github.com/juandresrodca/AdminForge/actions/workflows/ci.yml)
 [![.NET 10](https://img.shields.io/badge/.NET-10.0%20LTS-9fef00?style=flat-square&labelColor=0a0e16)](https://dotnet.microsoft.com/)
@@ -225,7 +226,7 @@ in front of it.
 ## Security
 
 AdminForge holds no accounts and no data, so the interesting surface is narrow, but
-six of its thirteen tools fetch a target you supply, which is server-side request
+six of its fourteen tools fetch a target you supply, which is server-side request
 forgery by design. That is handled once, in the core, and every tool inherits it:
 
 - Private, loopback, link-local (including cloud metadata at `169.254.169.254`),
@@ -242,6 +243,11 @@ changes and the limitations that remain are written out in
 [docs/security-model.md](docs/security-model.md); the implementation is in
 [ARCHITECTURE.md](ARCHITECTURE.md#security). To report a vulnerability, see
 [SECURITY.md](SECURITY.md).
+
+Decisions that are easy to undo by accident are written down rather than remembered:
+[docs/discoverability.md](docs/discoverability.md) records where AdminForge is listed,
+which lists it has been submitted to and why it has not been sent anywhere else yet,
+and checks the repository against each list's entry rules before anything is sent.
 
 ---
 

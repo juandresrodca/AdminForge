@@ -37,7 +37,7 @@ Checked against their README and submission template on 13 September 2026.
 | Open source | **Yes** — MIT |
 | Works without creating an account | **Yes** — there are no accounts at all |
 | `url` is a direct link to the tool, usable in the browser | **No** — there is no public instance yet, and none of the 262 entries they list links to a repository instead |
-| Description under 140 characters | **Yes** — the draft below is 115 |
+| Description under 140 characters | **Yes** — the draft below is 131 |
 | Three to five tags | **Yes** — five |
 | Sent through the **Request to Add a Tool** issue template, or the site's *Submit a tool* button | Their intake is issues, not pull requests; the recent merged pull requests are all changes to the site itself |
 
@@ -51,7 +51,7 @@ A public instance. Any small container host will run
 
 ```text
 Name: AdminForge
-Description: Sysadmin and security toolbox: subnets, TLS certificates, DNS, SPF/DKIM/DMARC and Windows error codes in one place.
+Description: Sysadmin and security toolbox running on your own instance: subnets, TLS certificates, DNS, SPF/DKIM/DMARC and Windows error codes.
 URL: <the public instance>
 Tags: sysadmin, networking, security, dns, certificates
 Github: https://github.com/juandresrodca/AdminForge
@@ -61,6 +61,11 @@ Category: Utilities
 IT-Tools, the nearest thing they already list, sits under *Development* and CyberChef
 under *Privacy*. *Utilities* fits sysadmin work better than either, but it is the
 maintainers' call.
+
+Both lists ask where the work happens, so both drafts answer it the same way: the
+instance you run is what does the work. Every tool this description names is a Server
+row in the *Where each tool runs* table, so saying so costs nothing and keeps the entry
+from implying the opposite.
 
 ---
 
@@ -83,7 +88,7 @@ Checked against their contributing guide and pull request checklist on 13 Septem
 | Not already listed on awesome-sysadmin | **Yes** |
 | Not a cloud-dependent service, a library, a PaaS, or a Dockerised port of another project | **Yes** — none of those apply |
 | Demo link, if given, is an interactive demo | Optional; the NoSignups instance would serve |
-| Description under 250 characters, sentence case, without "open-source", "free" or "self-hosted" | **Yes** — the draft below is 175 |
+| Description under 250 characters, sentence case, without "open-source", "free" or "self-hosted" | **Yes** — the draft below is 219 |
 | No machine-generated submissions that ignore the guidelines | Their stated penalty is a ban, so this entry should be written and checked by hand |
 
 ### What unblocks it
@@ -98,7 +103,7 @@ starts the clock; tagged on 13 September 2026, the earliest submission date woul
 name: AdminForge
 website_url: https://github.com/juandresrodca/AdminForge
 source_code_url: https://github.com/juandresrodca/AdminForge
-description: Browser-based toolbox for sysadmin and security work, including a subnet calculator, TLS certificate checker, DNS and SPF/DKIM/DMARC lookups, and a Windows error code decoder.
+description: Toolbox for sysadmin and security work, most of it running on your own instance rather than in the browser: a subnet calculator, TLS certificate checker, DNS and SPF/DKIM/DMARC lookups, and a Windows error code decoder.
 licenses:
   - MIT
 platforms:
@@ -114,8 +119,11 @@ tags:
   network tools but not the rest.
 - **Platforms.** `C#` and `Docker` match how other .NET entries such as Ombi and slskd
   declare themselves, and are what installing AdminForge actually needs.
-- **`depends_3rdparty`** is left at its default of `false`. AdminForge runs without any
-  outside service; only the RDAP lookup reaches out, to rdap.org.
+- **`depends_3rdparty`** is left at its default of `false`, which is the right value: no
+  tool depends on a named third-party service to work. That is a narrower claim than
+  nothing reaching out. Six of the fourteen tools do make an outbound request, five of
+  them to a host you supply; `rdap.org` is the only fixed host AdminForge contacts, and
+  the RDAP lookup is the one tool that needs someone else's server to answer at all.
 - Add `demo_url` once a public instance exists.
 
 ---
@@ -123,6 +131,14 @@ tags:
 ## Keeping this page honest
 
 - Re-read a list's rules before submitting. Both change, and every check above is dated.
+- Both drafts were read back against that table on 9 November 2026. The yaml entry called
+  AdminForge *Browser-based* and then named five Server tools, and the `depends_3rdparty`
+  note put the whole outbound surface on RDAP; both were corrected, and both character
+  counts in the rule tables above were recounted at the same time.
 - Both lists look hard at privacy claims. The README's opening lines were tightened on
-  13 September 2026 so that each one survives checking: eight of the twelve tools run on
-  the server, so "nothing leaves the browser" is not a claim AdminForge makes.
+  13 September 2026 so that each one survives checking: most of the tools run on the
+  server, so "nothing leaves the browser" is not a claim AdminForge makes. Counted from
+  the *Where each tool runs* table in [docs/tools/README.md](tools/README.md) on
+  8 November 2026, ten of the fourteen run on the server and four in the browser. Take
+  the figures from that table rather than from this page or the README, because the table
+  is the row a new tool has to add.
