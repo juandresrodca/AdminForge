@@ -824,6 +824,11 @@ main {
     color: var(--accent);
 }
 
+/* .btn sets display, which would otherwise beat the hidden attribute. */
+.btn[hidden] {
+    display: none;
+}
+
 .btn[disabled] {
     opacity: 0.6;
     cursor: progress;

@@ -399,6 +399,47 @@
         });
     }
 
+    // -------------------------------------------------------------- share link
+
+    /* Builds /tools/<id>?Field=value from the form as it stands. Only server-side
+       tools render the button, and password fields are left out, so nothing that
+       should stay off the network is ever put in a URL. */
+    function shareUrl(form) {
+        var params = new URLSearchParams();
+
+        form.querySelectorAll("input[name], select[name], textarea[name]").forEach(function (field) {
+            if (field.type === "hidden" || field.type === "password") { return; }
+
+            if (field.type === "checkbox") {
+                params.set(field.name, field.checked ? "true" : "false");
+            } else if (field.value.trim() !== "") {
+                params.set(field.name, field.value.trim());
+            }
+        });
+
+        var query = params.toString();
+        return window.location.origin + window.location.pathname + (query ? "?" + query : "");
+    }
+
+    function wireShare() {
+        document.querySelectorAll("[data-share]").forEach(function (button) {
+            var form = button.closest("form");
+            if (!form || !navigator.clipboard) { return; }
+
+            button.hidden = false;
+
+            button.addEventListener("click", function () {
+                navigator.clipboard.writeText(shareUrl(form)).then(function () {
+                    var label = button.querySelector("[data-share-label]");
+                    label.textContent = "Link copied";
+                    window.setTimeout(function () {
+                        label.textContent = "Copy link";
+                    }, 1600);
+                });
+            });
+        });
+    }
+
     // ---------------------------------------------------------- search hotkey
 
     function wireSearchHotkey() {
@@ -425,6 +466,7 @@
     function boot() {
         wireForms();
         wireCopy();
+        wireShare();
         wireSearchHotkey();
     }
 

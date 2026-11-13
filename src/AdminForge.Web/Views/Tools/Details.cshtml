@@ -42,6 +42,14 @@
                     <span data-run-label>Run</span>
                 </button>
                 <button class="btn btn-quiet" type="reset">Clear</button>
+                @if (!isClient && !tool.Form.IsEmpty)
+                {
+                    @* Hidden until the script wires it up: without JavaScript it could do nothing. *@
+                    <button class="btn btn-quiet" type="button" data-share hidden
+                            title="Copy a link that opens this tool with these values filled in">
+                        <span data-share-label>Copy link</span>
+                    </button>
+                }
             </div>
         </form>
 

@@ -1,27 +1,93 @@
 version: 2
+
+# Every ecosystem groups its routine bumps into one pull request, so a week of updates
+# is one review and one CI run instead of a queue of near-identical ones.
+#
+# Cooldown holds back a release for a few days after it is published. Most malicious
+# package versions are caught and pulled within that window, so a security toolbox
+# should not be among the first to install them.
+
 updates:
   - package-ecosystem: nuget
     directory: "/"
     schedule:
       interval: weekly
       day: monday
+      time: "06:00"
+      timezone: Etc/UTC
     open-pull-requests-limit: 5
     labels: ["dependencies"]
+    commit-message:
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 3
+      semver-major-days: 14
     groups:
-      # One pull request for the routine bumps keeps the queue readable for a project
-      # whose review time is better spent on tool contributions.
+      # Routine bumps in one pull request. Majors stay separate because they can break
+      # an API and deserve their own review.
       all-nuget:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:
+      # The ASP.NET Core and Microsoft.Extensions majors track the target framework.
+      # They move together with global.json and the Docker images in a deliberate
+      # upgrade, never as a lone package bump that cannot build against net10.0.
+      - dependency-name: "Microsoft.AspNetCore.*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "Microsoft.Extensions.*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: dotnet-sdk
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 3
+    ignore:
+      # Same reasoning as above: a new SDK major is a framework upgrade, done by hand.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: monthly
+      time: "06:00"
+      timezone: Etc/UTC
     labels: ["dependencies"]
+    commit-message:
+      prefix: "ci(deps)"
+    cooldown:
+      default-days: 7
+    groups:
+      # Majors included: an action's major is usually a Node runtime bump, and CI on
+      # the pull request is the test. One grouped PR keeps every workflow on the same
+      # versions instead of a mix of accepted and declined ones.
+      all-actions:
+        patterns: ["*"]
 
   - package-ecosystem: docker
     directory: "/"
     schedule:
       interval: monthly
+      time: "06:00"
+      timezone: Etc/UTC
     labels: ["dependencies"]
+    commit-message:
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 3
+    groups:
+      dotnet-images:
+        patterns: ["*"]
+    ignore:
+      # The sdk and aspnet image majors are the .NET version. 10.0 to 11.0 is a
+      # framework upgrade, not an image refresh.
+      - dependency-name: "*dotnet/*"
+        update-types: ["version-update:semver-major"]
