@@ -121,8 +121,8 @@ tags:
   declare themselves, and are what installing AdminForge actually needs.
 - **`depends_3rdparty`** is left at its default of `false`, which is the right value: no
   tool depends on a named third-party service to work. That is a narrower claim than
-  nothing reaching out. Six of the fourteen tools do make an outbound request, five of
-  them to a host you supply; `rdap.org` is the only fixed host AdminForge contacts, and
+  nothing reaching out. Six tools make an outbound request, five of them to a host
+  you supply; `rdap.org` is the only fixed host AdminForge contacts, and
   the RDAP lookup is the one tool that needs someone else's server to answer at all.
 - Add `demo_url` once a public instance exists.
 
