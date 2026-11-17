@@ -23,6 +23,7 @@ container is <http://localhost:8080/tools/subnet-calculator>.
 | [Hash generator](#hash-generator) | `hash-generator` | Browser | No |
 | [Encoder and decoder](#encoder-and-decoder) | `text-encoder` | Browser | No |
 | [Subnet calculator](#subnet-calculator) | `subnet-calculator` | Server | No — pure arithmetic |
+| [IP range to CIDR converter](#ip-range-to-cidr-converter) | `ip-range-to-cidr` | Server | No |
 | [Cron expression parser](#cron-expression-parser) | `cron-parser` | Server | No — pure arithmetic |
 | [Uptime and SLA calculator](#uptime-and-sla-calculator) | `uptime-and-sla-percentage-calculator` | Server | No (pure arithmetic) |
 | [Windows error code lookup](#windows-error-code-lookup) | `windows-error-code` | Server | No — embedded dataset |
@@ -34,13 +35,13 @@ container is <http://localhost:8080/tools/subnet-calculator>.
 | [RDAP and WHOIS lookup](#rdap-and-whois-lookup) | `rdap-lookup` | Server | **Yes** — HTTPS to `rdap.org` and the registry it redirects to |
 
 Read that last column as the blast radius. Four tools never post your input anywhere,
-so a production token or a password is safe in them. Four more reach the server but
+so a production token or a password is safe in them. Five more reach the server but
 never the network, so the input stays on your instance. The remaining six aim a request
 at a target you supply, which is server-side request forgery as a feature: they are the
 reason the `AllowPrivateTargets` setting exists and the reason
 [docs/security-model.md](../security-model.md) is as long as it is.
 
-**Rate limiting applies to the ten server-side tools only** — the browser tools never
+**Rate limiting applies to the eleven server-side tools only** — the browser tools never
 reach the server, so there is nothing to limit. The default is 30 runs per client per
 60 seconds (`RateLimit__PermitLimit`, `RateLimit__WindowSeconds`), and a single run is
 capped at 15 seconds (`ToolTimeoutSeconds`) and 2 MiB of fetched response
@@ -65,6 +66,20 @@ count for this block — and what does it look like split into equal subnets.
 is made. A `/31` is treated as an RFC 3021 point-to-point link and a `/32` as a single
 host, so neither reports a broadcast address. The class letter in the output is
 historical trivia; classful addressing has been obsolete since CIDR.
+
+### IP range to CIDR converter
+
+Find the smallest set of CIDR blocks that covers an inclusive range, or expand CIDR
+blocks to their first and last addresses.
+
+| Field | Accepts |
+|---|---|
+| IP range or CIDR blocks (required) | Two IPv4 or two IPv6 addresses separated by a hyphen, such as `192.0.2.10 - 192.0.2.87`, or CIDR blocks separated by commas or whitespace. |
+
+A range yields a copyable list of CIDR blocks and the total number of addresses.
+For CIDR input, each row shows the network, both endpoints and the address count
+for that block. The conversion runs on your AdminForge instance and makes no
+outbound requests.
 
 ### DNS lookup
 
