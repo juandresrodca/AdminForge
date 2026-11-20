@@ -26,6 +26,10 @@ first version-pinned image.
   blocks that cover an IPv4 or IPv6 range and expands CIDR blocks to their endpoints.
   ([#14])
 
+- **Storage and data-rate converter** (`/tools/storage-and-data-rate-converter`)
+  compares decimal and binary storage sizes, converts bit and byte rates, and estimates
+  transfer time or size at a constant rate. ([#33])
+
 - **Share a lookup by link.** Every server-side tool has a *Copy link* button that
   copies `/tools/<id>?Field=value` for the form as it stands, and opening such a link
   fills the form in. It never runs the tool: a link that made the server contact a
@@ -99,8 +103,7 @@ Tools accepted into the roadmap and open for contribution. Grouped the same way 
   `-EncodedCommand` decoder ([#25]), `userAccountControl` decoder ([#26]),
   well-known SID resolver ([#27]), LDAP filter builder and validator ([#28]).
 - **Mail** — email header analyser ([#29]), DMARC record builder ([#30]).
-- **Calculators** — RAID capacity ([#32]), storage and data-rate units ([#33]),
-  chmod and Unix permissions ([#34]).
+- **Calculators** — RAID capacity ([#32]), chmod and Unix permissions ([#34]).
 
 New tools are added through the scaffold described in
 [`CONTRIBUTING.md`](CONTRIBUTING.md); a tool is one folder under

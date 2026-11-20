@@ -1,6 +1,6 @@
 # Roadmap
 
-Twenty-two tools are specified, labelled and open for contribution. Every one of them
+Twenty-one tools are specified, labelled and open for contribution. Every one of them
 has a tracking issue with acceptance criteria already written, so there is nothing to
 design before you start — pick a row, comment on the issue, and it is yours.
 
@@ -99,13 +99,12 @@ duplicating it.
 
 ## Calculators
 
-Three tools. Pure arithmetic over the input, no network, no data set to source, which
+Two tools. Pure arithmetic over the input, no network, no data set to source, which
 is exactly why they are the easiest place to learn the tool contract.
 
 | Issue | Tool | What it does | Effort |
 |---|---|---|---|
 | [#32](https://github.com/juandresrodca/AdminForge/issues/32) | RAID capacity calculator | Usable capacity, fault tolerance and rebuild exposure for an array. | medium |
-| [#33](https://github.com/juandresrodca/AdminForge/issues/33) | Storage and data-rate converter | Converts storage and data-rate units, keeping decimal and binary prefixes straight. | small |
 | [#34](https://github.com/juandresrodca/AdminForge/issues/34) | chmod calculator | Converts between symbolic and octal permissions, both directions, with an explanation. | small |
 
 ---

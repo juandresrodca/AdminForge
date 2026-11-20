@@ -144,7 +144,7 @@ exact ranges and the limitations that remain.
 
 ## Running without internet access
 
-Nine of the fifteen tools need no egress at all, which makes an air-gapped instance
+Ten of the sixteen tools need no egress at all, which makes an air-gapped instance
 genuinely useful rather than a stub.
 
 | Works offline | Needs outbound access |
@@ -155,6 +155,7 @@ genuinely useful rather than a stub.
 | Cron expression parser — no network, just a time zone database | HTTP security headers |
 | Uptime and SLA calculator: pure arithmetic on the server | SPF, DKIM and DMARC checker |
 | IP range to CIDR converter | security.txt validator |
+| Storage and data-rate converter | |
 
 Getting the image onto a disconnected host:
 
