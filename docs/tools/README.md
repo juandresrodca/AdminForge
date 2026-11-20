@@ -23,8 +23,10 @@ container is <http://localhost:8080/tools/subnet-calculator>.
 | [Hash generator](#hash-generator) | `hash-generator` | Browser | No |
 | [Encoder and decoder](#encoder-and-decoder) | `text-encoder` | Browser | No |
 | [Subnet calculator](#subnet-calculator) | `subnet-calculator` | Server | No — pure arithmetic |
+| [IP range to CIDR converter](#ip-range-to-cidr-converter) | `ip-range-to-cidr` | Server | No |
 | [Cron expression parser](#cron-expression-parser) | `cron-parser` | Server | No — pure arithmetic |
 | [Uptime and SLA calculator](#uptime-and-sla-calculator) | `uptime-and-sla-percentage-calculator` | Server | No (pure arithmetic) |
+| [Storage and data-rate converter](#storage-and-data-rate-converter) | `storage-and-data-rate-converter` | Server | No |
 | [Windows error code lookup](#windows-error-code-lookup) | `windows-error-code` | Server | No — embedded dataset |
 | [DNS lookup](#dns-lookup) | `dns-lookup` | Server | **Yes** — DNS, to your resolver or one you pick |
 | [TLS certificate checker](#tls-certificate-checker) | `tls-certificate-checker` | Server | **Yes** — a TLS handshake to the host and port |
@@ -34,13 +36,13 @@ container is <http://localhost:8080/tools/subnet-calculator>.
 | [RDAP and WHOIS lookup](#rdap-and-whois-lookup) | `rdap-lookup` | Server | **Yes** — HTTPS to `rdap.org` and the registry it redirects to |
 
 Read that last column as the blast radius. Four tools never post your input anywhere,
-so a production token or a password is safe in them. Four more reach the server but
+so a production token or a password is safe in them. Six more reach the server but
 never the network, so the input stays on your instance. The remaining six aim a request
 at a target you supply, which is server-side request forgery as a feature: they are the
 reason the `AllowPrivateTargets` setting exists and the reason
 [docs/security-model.md](../security-model.md) is as long as it is.
 
-**Rate limiting applies to the ten server-side tools only** — the browser tools never
+**Rate limiting applies to the twelve server-side tools only** — the browser tools never
 reach the server, so there is nothing to limit. The default is 30 runs per client per
 60 seconds (`RateLimit__PermitLimit`, `RateLimit__WindowSeconds`), and a single run is
 capped at 15 seconds (`ToolTimeoutSeconds`) and 2 MiB of fetched response
@@ -65,6 +67,20 @@ count for this block — and what does it look like split into equal subnets.
 is made. A `/31` is treated as an RFC 3021 point-to-point link and a `/32` as a single
 host, so neither reports a broadcast address. The class letter in the output is
 historical trivia; classful addressing has been obsolete since CIDR.
+
+### IP range to CIDR converter
+
+Find the smallest set of CIDR blocks that covers an inclusive range, or expand CIDR
+blocks to their first and last addresses.
+
+| Field | Accepts |
+|---|---|
+| IP range or CIDR blocks (required) | Two IPv4 or two IPv6 addresses separated by a hyphen, such as `192.0.2.10 - 192.0.2.87`, or CIDR blocks separated by commas or whitespace. |
+
+A range yields a copyable list of CIDR blocks and the total number of addresses.
+For CIDR input, each row shows the network, both endpoints and the address count
+for that block. The conversion runs on your AdminForge instance and makes no
+outbound requests.
 
 ### DNS lookup
 
@@ -296,6 +312,22 @@ minute, so a downtime budget is never overstated. Thousands separators are refus
 `1,5` is rejected instead of being read as fifteen. The output carries the allowed
 downtime rescaled to all five windows and a reference table of the six common tiers from
 99% to 99.999%.
+
+### Storage and data-rate converter
+
+Convert storage sizes between decimal and binary units, or convert bit and byte rates.
+The storage table compares each decimal unit with its binary counterpart and shows
+how much lower the binary value is as a percentage of the decimal value.
+For example, 4 TB is about 3.64 TiB, a difference of about 9.05%.
+
+| Field | Accepts |
+|---|---|
+| Value and unit (required) | A non-negative number and a storage unit from B to PB or KiB to PiB, or a rate in bps, Kbps, Mbps, Gbps, KB/s, MB/s or GB/s. Use a decimal point for fractional input. |
+| Transfer size and unit | Optional with a positive rate. Enter a size and its storage unit to estimate the time in seconds. |
+| Transfer duration (seconds) | Optional with a rate. Enter a duration to estimate the number of bytes transferable in that time. |
+
+Lowercase `b` means bits and uppercase `B` means bytes. The arithmetic runs on the
+AdminForge instance and transfer estimates assume a constant rate.
 
 ---
 

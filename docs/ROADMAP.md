@@ -1,6 +1,6 @@
 # Roadmap
 
-Twenty-three tools are specified, labelled and open for contribution. Every one of them
+Twenty-one tools are specified, labelled and open for contribution. Every one of them
 has a tracking issue with acceptance criteria already written, so there is nothing to
 design before you start — pick a row, comment on the issue, and it is yours.
 
@@ -44,7 +44,7 @@ fixture data to source.
 
 ## Networking
 
-Seven tools. The category the toolbox is most often reached for, and the one where the
+Six tools. The category the toolbox is most often reached for, and the one where the
 SSRF guard does the most work — anything that resolves a hostname inherits it from the
 core rather than implementing its own checks.
 
@@ -54,7 +54,6 @@ core rather than implementing its own checks.
 | [#11](https://github.com/juandresrodca/AdminForge/issues/11) | IP geolocation and ASN lookup | Resolves an address to its autonomous system and the announcing organisation. | medium |
 | [#12](https://github.com/juandresrodca/AdminForge/issues/12) | TCP port reachability checker | Opens a connection to a host and port and reports whether it answered, and how quickly. | medium |
 | [#13](https://github.com/juandresrodca/AdminForge/issues/13) | Reverse DNS (PTR) bulk lookup | Resolves PTR records across a list of addresses or a small CIDR block. | small |
-| [#14](https://github.com/juandresrodca/AdminForge/issues/14) | IP range to CIDR converter | Produces the smallest set of CIDR blocks covering a start and end address. | medium |
 | [#15](https://github.com/juandresrodca/AdminForge/issues/15) | Wake-on-LAN magic packet builder | Builds the magic packet, shows the bytes, and optionally sends it. | small |
 | [#16](https://github.com/juandresrodca/AdminForge/issues/16) | URL redirect chain tracer | Follows a URL through every hop and shows the status and target of each. | small |
 
@@ -100,13 +99,12 @@ duplicating it.
 
 ## Calculators
 
-Three tools. Pure arithmetic over the input, no network, no data set to source, which
+Two tools. Pure arithmetic over the input, no network, no data set to source, which
 is exactly why they are the easiest place to learn the tool contract.
 
 | Issue | Tool | What it does | Effort |
 |---|---|---|---|
 | [#32](https://github.com/juandresrodca/AdminForge/issues/32) | RAID capacity calculator | Usable capacity, fault tolerance and rebuild exposure for an array. | medium |
-| [#33](https://github.com/juandresrodca/AdminForge/issues/33) | Storage and data-rate converter | Converts storage and data-rate units, keeping decimal and binary prefixes straight. | small |
 | [#34](https://github.com/juandresrodca/AdminForge/issues/34) | chmod calculator | Converts between symbolic and octal permissions, both directions, with an explanation. | small |
 
 ---

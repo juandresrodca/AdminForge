@@ -103,7 +103,7 @@ AdminForge is the same idea pointed at **infrastructure work**:
 
 ## What is in it
 
-Fourteen tools today, across six categories. Each one has a reference section (inputs,
+Sixteen tools today, across six categories. Each one has a reference section (inputs,
 limits, and whether it makes an outbound request) in the
 **[tool reference](docs/tools/README.md)**.
 
@@ -112,6 +112,7 @@ limits, and whether it makes an outbound request) in the
 | Tool | Runs | What it does |
 |---|---|---|
 | **Subnet calculator** | Server | Network, broadcast, usable range, mask, wildcard and host count for IPv4 and IPv6, plus splitting a block into equal subnets |
+| **IP range to CIDR converter** | Server | Covers an IPv4 or IPv6 range with the fewest CIDR blocks, or finds the endpoints of each block |
 | **DNS lookup** | Server | A, AAAA, MX, TXT, NS, CNAME, SOA, CAA, SRV and PTR against the system resolver or one you choose |
 | **RDAP and WHOIS lookup** | Server | Who registered a domain or owns an IP range, with registration and expiry dates |
 
@@ -145,6 +146,7 @@ limits, and whether it makes an outbound request) in the
 | **Encoder and decoder** | Browser | Base64, base64url, percent-encoding, hex and HTML entities, UTF-8 correct |
 | **Cron expression parser** | Server | Field-by-field explanation and the next runs in the time zone you pick |
 | **Uptime and SLA calculator** | Server | Converts an availability target into the downtime it allows, and downtime back into availability, against the common nines |
+| **Storage and data-rate converter** | Server | Converts decimal and binary storage units and bit and byte rates, and estimates transfer time |
 
 ![The tool gallery, grouped by category](docs/img/gallery.png)
 
@@ -196,10 +198,10 @@ a tool answering wrongly, or something that should not be public.
 
 ### Good first issues
 
-Twenty-three tools are specified and waiting, each with acceptance criteria already
+Twenty-one tools are specified and waiting, each with acceptance criteria already
 written. Comment on one and it is yours.
 
-**[→ The roadmap](docs/ROADMAP.md)**: all twenty-three grouped by category, with an
+**[→ The roadmap](docs/ROADMAP.md)**: all twenty-one grouped by category, with an
 effort estimate on each and a shortlist of the five shortest paths from `git clone` to
 a merged pull request.
 
@@ -238,7 +240,7 @@ in front of it.
 ## Security
 
 AdminForge holds no accounts and no data, so the interesting surface is narrow, but
-six of its fourteen tools fetch a target you supply, which is server-side request
+six of its sixteen tools fetch a target you supply, which is server-side request
 forgery by design. That is handled once, in the core, and every tool inherits it:
 
 - Private, loopback, link-local (including cloud metadata at `169.254.169.254`),
@@ -287,7 +289,6 @@ and checks the repository against each list's entry rules before anything is sen
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-Two of the fourteen tools came from outside this repository.
 [lolcubaba31](https://github.com/lolcubaba31) wrote the security.txt validator in
 [`63c0733`](https://github.com/juandresrodca/AdminForge/commit/63c0733) on 15 September 2026,
 closing [#37](https://github.com/juandresrodca/AdminForge/issues/37).

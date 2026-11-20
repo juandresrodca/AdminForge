@@ -22,6 +22,14 @@ first version-pinned image.
 
 ### Added
 
+- **IP range to CIDR converter** (`/tools/ip-range-to-cidr`) finds the fewest CIDR
+  blocks that cover an IPv4 or IPv6 range and expands CIDR blocks to their endpoints.
+  ([#14])
+
+- **Storage and data-rate converter** (`/tools/storage-and-data-rate-converter`)
+  compares decimal and binary storage sizes, converts bit and byte rates, and estimates
+  transfer time or size at a constant rate. ([#33])
+
 - **Share a lookup by link.** Every server-side tool has a *Copy link* button that
   copies `/tools/<id>?Field=value` for the form as it stands, and opening such a link
   fills the form in. It never runs the tool: a link that made the server contact a
@@ -86,7 +94,7 @@ Tools accepted into the roadmap and open for contribution. Grouped the same way 
 [`docs/ROADMAP.md`](docs/ROADMAP.md); each links to its tracking issue.
 
 - **Networking** — MAC/OUI vendor lookup ([#6]), IP geolocation and ASN lookup ([#11]),
-  TCP port reachability checker ([#12]), bulk reverse DNS ([#13]), IP range to CIDR ([#14]),
+  TCP port reachability checker ([#12]), bulk reverse DNS ([#13]),
   Wake-on-LAN packet builder ([#15]), URL redirect chain tracer ([#16]).
 - **Certificates and crypto** — X.509 certificate decoder ([#17]), CSR decoder ([#18]),
   hash identifier ([#19]), HMAC generator and verifier ([#20]), bcrypt generator and
@@ -95,8 +103,7 @@ Tools accepted into the roadmap and open for contribution. Grouped the same way 
   `-EncodedCommand` decoder ([#25]), `userAccountControl` decoder ([#26]),
   well-known SID resolver ([#27]), LDAP filter builder and validator ([#28]).
 - **Mail** — email header analyser ([#29]), DMARC record builder ([#30]).
-- **Calculators** — RAID capacity ([#32]), storage and data-rate units ([#33]),
-  chmod and Unix permissions ([#34]).
+- **Calculators** — RAID capacity ([#32]), chmod and Unix permissions ([#34]).
 
 New tools are added through the scaffold described in
 [`CONTRIBUTING.md`](CONTRIBUTING.md); a tool is one folder under
