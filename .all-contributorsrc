@@ -12,5 +12,27 @@
   "contributorsSortAlphabetically": false,
   "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-9fef00?style=flat-square&labelColor=0a0e16)](#contributors)",
   "skipCi": true,
-  "contributors": []
+  "contributors": [
+    {
+      "login": "lolcubaba31",
+      "name": "lolcubaba31",
+      "avatar_url": "https://avatars.githubusercontent.com/u/210286718?v=4",
+      "profile": "https://github.com/lolcubaba31",
+      "contributions": ["code"]
+    },
+    {
+      "login": "yeab-tatek",
+      "name": "yeab-tatek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/193041579?v=4",
+      "profile": "https://github.com/yeab-tatek",
+      "contributions": ["code"]
+    },
+    {
+      "login": "tuncaypeker",
+      "name": "tuncaypeker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16236634?v=4",
+      "profile": "https://github.com/tuncaypeker",
+      "contributions": ["code"]
+    }
+  ]
 }

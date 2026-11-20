@@ -18,7 +18,7 @@ AdminForge instance itself, which is your own when you self-host.
 [![Container](https://img.shields.io/badge/ghcr.io-adminforge-9fef00?style=flat-square&labelColor=0a0e16&logo=docker&logoColor=9fef00)](https://github.com/juandresrodca/AdminForge/pkgs/container/adminforge)
 [![Good first issues](https://img.shields.io/github/issues/juandresrodca/AdminForge/good%20first%20issue?style=flat-square&label=good%20first%20issues&labelColor=0a0e16&color=9fef00)](https://github.com/juandresrodca/AdminForge/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 [![Hacktoberfest](https://img.shields.io/badge/hacktoberfest-welcome-9fef00?style=flat-square&labelColor=0a0e16)](https://github.com/juandresrodca/AdminForge/issues?q=is%3Aissue+is%3Aopen+label%3Ahacktoberfest)
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-9fef00?style=flat-square&labelColor=0a0e16)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-9fef00?style=flat-square&labelColor=0a0e16)](#contributors)
 
 ![Searching the gallery, splitting a /22 in the subnet calculator, copying a link to the result and decoding a Windows error code](docs/img/demo.gif)
 
@@ -281,6 +281,7 @@ and checks the repository against each list's entry rules before anything is sen
     <tr>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/lolcubaba31"><img src="https://avatars.githubusercontent.com/u/210286718?v=4?s=90" width="90px;" alt="lolcubaba31"/><br /><sub><b>lolcubaba31</b></sub></a><br /><a href="https://github.com/juandresrodca/AdminForge/commits?author=lolcubaba31" title="Code">&#128187;</a></td>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/yeab-tatek"><img src="https://avatars.githubusercontent.com/u/193041579?v=4?s=90" width="90px;" alt="yeab-tatek"/><br /><sub><b>yeab-tatek</b></sub></a><br /><a href="https://github.com/juandresrodca/AdminForge/commits?author=yeab-tatek" title="Code">&#128187;</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/tuncaypeker"><img src="https://avatars.githubusercontent.com/u/16236634?v=4?s=90" width="90px;" alt="tuncaypeker"/><br /><sub><b>tuncaypeker</b></sub></a><br /><a href="https://github.com/juandresrodca/AdminForge/commits?author=tuncaypeker" title="Code">&#128187;</a></td>
     </tr>
   </tbody>
 </table>
@@ -294,16 +295,18 @@ and checks the repository against each list's entry rules before anything is sen
 closing [#37](https://github.com/juandresrodca/AdminForge/issues/37).
 [yeab-tatek](https://github.com/yeab-tatek) wrote the uptime and SLA calculator in
 [#47](https://github.com/juandresrodca/AdminForge/pull/47), merged on 31 October 2026.
-Both arrived through the good first issues the badge row links to.
+[tuncaypeker](https://github.com/tuncaypeker) wrote two: the IP range to CIDR converter in
+[#62](https://github.com/juandresrodca/AdminForge/pull/62), merged on 17 November 2026, and
+the storage and data-rate converter in
+[#63](https://github.com/juandresrodca/AdminForge/pull/63), merged on 20 November 2026.
+All four arrived through the good first issues the badge row links to.
 
 Every contributor gets credited here, whatever the contribution:
 [all-contributors](https://allcontributors.org) counts documentation, bug reports,
 design and ideas alongside code.
 
-> The table above was written by hand. `.all-contributorsrc` still holds
-> `"contributors": []`, so running the all-contributors CLI regenerates this block from the
-> rc file and removes both entries. Add them to the rc file first, or run
-> `npx all-contributors-cli add <login> code` twice and let it write the table itself.
+> `.all-contributorsrc` lists the same three contributors as the table, so
+> `npx all-contributors-cli add <login> <type>` adds the next one without dropping anyone.
 
 ## Changelog
 
