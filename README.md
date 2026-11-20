@@ -103,7 +103,7 @@ AdminForge is the same idea pointed at **infrastructure work**:
 
 ## What is in it
 
-Sixteen tools today, across six categories. Each one has a reference section (inputs,
+Seventeen tools today, across six categories. Each one has a reference section (inputs,
 limits, and whether it makes an outbound request) in the
 **[tool reference](docs/tools/README.md)**.
 
@@ -115,6 +115,7 @@ limits, and whether it makes an outbound request) in the
 | **IP range to CIDR converter** | Server | Covers an IPv4 or IPv6 range with the fewest CIDR blocks, or finds the endpoints of each block |
 | **DNS lookup** | Server | A, AAAA, MX, TXT, NS, CNAME, SOA, CAA, SRV and PTR against the system resolver or one you choose |
 | **RDAP and WHOIS lookup** | Server | Who registered a domain or owns an IP range, with registration and expiry dates |
+| **MAC address and OUI vendor lookup** | Server | The vendor behind a MAC from the embedded IEEE registries, and whether the address is local, randomised or multicast |
 
 ### Security
 
@@ -198,10 +199,10 @@ a tool answering wrongly, or something that should not be public.
 
 ### Good first issues
 
-Twenty-one tools are specified and waiting, each with acceptance criteria already
+Twenty tools are specified and waiting, each with acceptance criteria already
 written. Comment on one and it is yours.
 
-**[→ The roadmap](docs/ROADMAP.md)**: all twenty-one grouped by category, with an
+**[→ The roadmap](docs/ROADMAP.md)**: all twenty grouped by category, with an
 effort estimate on each and a shortlist of the five shortest paths from `git clone` to
 a merged pull request.
 
@@ -240,7 +241,7 @@ in front of it.
 ## Security
 
 AdminForge holds no accounts and no data, so the interesting surface is narrow, but
-six of its sixteen tools fetch a target you supply, which is server-side request
+six of its seventeen tools fetch a target you supply, which is server-side request
 forgery by design. That is handled once, in the core, and every tool inherits it:
 
 - Private, loopback, link-local (including cloud metadata at `169.254.169.254`),

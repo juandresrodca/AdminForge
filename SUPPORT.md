@@ -27,11 +27,12 @@ and include the input you used, because that is what becomes the regression test
 
 If the question is really *"is it safe to paste this in here"*, the answer is in
 [docs/tools/README.md](docs/tools/README.md) and you do not have to ask: it lists every
-tool with whether it makes an outbound request at all. Four of the sixteen never send
+tool with whether it makes an outbound request at all. Four of the seventeen never send
 your input anywhere: the JWT decoder, password generator, hash generator, and encoder and
 decoder all run in your browser. The subnet calculator, IP range to CIDR converter,
-cron expression parser, Windows error code lookup, uptime and SLA calculator, and
-storage and data-rate converter run on your instance without outbound access.
+cron expression parser, Windows error code lookup, MAC address and OUI vendor lookup,
+uptime and SLA calculator, and storage and data-rate converter run on your instance
+without outbound access.
 The remaining six make outbound requests. See [docs/security-model.md](docs/security-model.md).
 
 ## "This should not be public"
