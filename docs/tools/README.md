@@ -28,6 +28,7 @@ container is <http://localhost:8080/tools/subnet-calculator>.
 | [Uptime and SLA calculator](#uptime-and-sla-calculator) | `uptime-and-sla-percentage-calculator` | Server | No (pure arithmetic) |
 | [Storage and data-rate converter](#storage-and-data-rate-converter) | `storage-and-data-rate-converter` | Server | No |
 | [Windows error code lookup](#windows-error-code-lookup) | `windows-error-code` | Server | No — embedded dataset |
+| [MAC address and OUI vendor lookup](#mac-address-and-oui-vendor-lookup) | `mac-address-lookup` | Server | No — embedded IEEE registries |
 | [DNS lookup](#dns-lookup) | `dns-lookup` | Server | **Yes** — DNS, to your resolver or one you pick |
 | [TLS certificate checker](#tls-certificate-checker) | `tls-certificate-checker` | Server | **Yes** — a TLS handshake to the host and port |
 | [HTTP security headers](#http-security-headers) | `http-security-headers` | Server | **Yes** — an HTTP request to the URL |
@@ -36,13 +37,13 @@ container is <http://localhost:8080/tools/subnet-calculator>.
 | [RDAP and WHOIS lookup](#rdap-and-whois-lookup) | `rdap-lookup` | Server | **Yes** — HTTPS to `rdap.org` and the registry it redirects to |
 
 Read that last column as the blast radius. Four tools never post your input anywhere,
-so a production token or a password is safe in them. Six more reach the server but
+so a production token or a password is safe in them. Seven more reach the server but
 never the network, so the input stays on your instance. The remaining six aim a request
 at a target you supply, which is server-side request forgery as a feature: they are the
 reason the `AllowPrivateTargets` setting exists and the reason
 [docs/security-model.md](../security-model.md) is as long as it is.
 
-**Rate limiting applies to the twelve server-side tools only** — the browser tools never
+**Rate limiting applies to the thirteen server-side tools only** — the browser tools never
 reach the server, so there is nothing to limit. The default is 30 runs per client per
 60 seconds (`RateLimit__PermitLimit`, `RateLimit__WindowSeconds`), and a single run is
 capped at 15 seconds (`ToolTimeoutSeconds`) and 2 MiB of fetched response
@@ -81,6 +82,33 @@ A range yields a copyable list of CIDR blocks and the total number of addresses.
 For CIDR input, each row shows the network, both endpoints and the address count
 for that block. The conversion runs on your AdminForge instance and makes no
 outbound requests.
+
+### MAC address and OUI vendor lookup
+
+**Answers:** who made the network interface behind this MAC address, and is there a
+manufacturer to find at all.
+
+| Field | Accepts |
+|---|---|
+| MAC address (required) | Up to 64 characters. `00:1A:2B:3C:4D:5E`, `00-1A-2B-3C-4D-5E`, `001A.2B3C.4D5E` or `001A2B3C4D5E`, in either case. |
+
+The vendor comes from the IEEE MA-L (24-bit), MA-M (28-bit) and MA-S (36-bit)
+registries, embedded in the image, and the most specific block wins: an MA-S assignment
+inside a block the IEEE registered to itself names the real registrant, not the IEEE.
+The result also reads the two flag bits. A set **U/L bit** means the address was
+assigned by software, typically a randomised Wi-Fi address, a VM or a container, so it
+says so instead of reporting a vendor. A set **I/G bit** marks a group address; IPv4
+and IPv6 multicast and broadcast are named, and other group addresses are looked up
+with that bit cleared. Every notation is listed, plus the IPv6 link-local address that
+SLAAC derives with modified EUI-64.
+
+**Limits.** No network call is made: the registries ship with the instance and are only
+as current as the image. A registration names whoever bought the block, which is often
+the chipset or network-card maker rather than the brand on the device.
+`tools/refresh-oui-registry.py` regenerates the data from the IEEE CSV files, or from
+the `oui-data` npm package where the IEEE site is unreachable.
+
+![The MAC lookup naming Microsoft for a Hyper-V address, with the flag bits and every notation](../img/mac-address-lookup.png)
 
 ### DNS lookup
 

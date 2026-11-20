@@ -1,6 +1,6 @@
 # Roadmap
 
-Twenty-one tools are specified, labelled and open for contribution. Every one of them
+Twenty tools are specified, labelled and open for contribution. Every one of them
 has a tracking issue with acceptance criteria already written, so there is nothing to
 design before you start — pick a row, comment on the issue, and it is yours.
 
@@ -44,13 +44,12 @@ fixture data to source.
 
 ## Networking
 
-Six tools. The category the toolbox is most often reached for, and the one where the
+Five tools. The category the toolbox is most often reached for, and the one where the
 SSRF guard does the most work — anything that resolves a hostname inherits it from the
 core rather than implementing its own checks.
 
 | Issue | Tool | What it does | Effort |
 |---|---|---|---|
-| [#6](https://github.com/juandresrodca/AdminForge/issues/6) | MAC address and OUI vendor lookup | Takes a MAC in any common notation and reports the organisation that registered the OUI. | medium |
 | [#11](https://github.com/juandresrodca/AdminForge/issues/11) | IP geolocation and ASN lookup | Resolves an address to its autonomous system and the announcing organisation. | medium |
 | [#12](https://github.com/juandresrodca/AdminForge/issues/12) | TCP port reachability checker | Opens a connection to a host and port and reports whether it answered, and how quickly. | medium |
 | [#13](https://github.com/juandresrodca/AdminForge/issues/13) | Reverse DNS (PTR) bulk lookup | Resolves PTR records across a list of addresses or a small CIDR block. | small |

@@ -22,6 +22,14 @@ first version-pinned image.
 
 ### Added
 
+- **MAC address and OUI vendor lookup** (`/tools/mac-address-lookup`) names the
+  organisation behind a MAC from the IEEE MA-L, MA-M and MA-S registries, choosing the
+  most specific block, and reads the U/L and I/G bits so a locally administered or
+  randomised address says so instead of reporting a vendor. IPv4 and IPv6 multicast and
+  broadcast are named, and the result lists every notation and the EUI-64 link-local
+  address. The registries are embedded as a 577 KB gzip file, so the lookup is offline;
+  `tools/refresh-oui-registry.py` regenerates it byte for byte. ([#6])
+
 - **IP range to CIDR converter** (`/tools/ip-range-to-cidr`) finds the fewest CIDR
   blocks that cover an IPv4 or IPv6 range and expands CIDR blocks to their endpoints.
   ([#14])
@@ -93,7 +101,7 @@ first version-pinned image.
 Tools accepted into the roadmap and open for contribution. Grouped the same way as
 [`docs/ROADMAP.md`](docs/ROADMAP.md); each links to its tracking issue.
 
-- **Networking** — MAC/OUI vendor lookup ([#6]), IP geolocation and ASN lookup ([#11]),
+- **Networking** — IP geolocation and ASN lookup ([#11]),
   TCP port reachability checker ([#12]), bulk reverse DNS ([#13]),
   Wake-on-LAN packet builder ([#15]), URL redirect chain tracer ([#16]).
 - **Certificates and crypto** — X.509 certificate decoder ([#17]), CSR decoder ([#18]),

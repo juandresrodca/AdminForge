@@ -21,6 +21,8 @@
   <ItemGroup Label="Tool datasets">
     <!-- Data-only tool content. Adding entries to these files is a pull request with no C# in it. -->
     <EmbeddedResource Include="**\*.json" />
+    <!-- Datasets too large to keep as plain JSON in git, such as the IEEE OUI registry. -->
+    <EmbeddedResource Include="**\*.json.gz" />
   </ItemGroup>
 
   <ItemGroup>
