@@ -12,7 +12,7 @@ reach the instance.
 | | |
 |---|---|
 | State | None. No database, no volumes, no config file required. The container is happy `--read-only` with a tmpfs on `/tmp`. |
-| Ports | One: `8080` inside the container. |
+| Ports | One: `8080` inside the container by default. Hosting platforms can override the listening port by setting the `PORT` environment variable. |
 | Architectures | `linux/amd64` and `linux/arm64` — a Raspberry Pi or an Apple silicon Mac pulls the same tag. |
 | Outbound network | Only for the server-side tools, and only to the target you type. See [Running without internet access](#running-without-internet-access). |
 | Privileges | None. The image runs as an unprivileged user and wants `no-new-privileges`. |
@@ -49,6 +49,21 @@ services:
 
 Then `docker compose up -d`, and `docker compose logs -f adminforge` if it does not
 come up.
+
+## Platform-assigned `PORT`
+
+Some hosting platforms provide a `PORT` environment variable to tell an
+application which port to listen on.
+
+AdminForge automatically detects this variable and uses the assigned port
+when it contains a valid integer between `1` and `65535` (inclusive).
+
+If `PORT` is unset or contains an invalid value, AdminForge ignores it and
+continues using its default listening-port configuration.
+
+No image changes or manual `ASPNETCORE_URLS` configuration are needed.
+This changes the application's listening port only. Docker port mappings
+and health-check configurations must be configured separately.
 
 ## Behind a reverse proxy — and why it is not optional
 
@@ -157,6 +172,9 @@ genuinely useful rather than a stub.
 | IP range to CIDR converter | security.txt validator |
 | Storage and data-rate converter | |
 | MAC address and OUI vendor lookup — the IEEE registries ship in the image | |
+
+The bundled MAC and OUI registry works offline. Refreshing it with
+`tools/refresh-oui-registry.py` requires access to IEEE or npm.
 
 Getting the image onto a disconnected host:
 
